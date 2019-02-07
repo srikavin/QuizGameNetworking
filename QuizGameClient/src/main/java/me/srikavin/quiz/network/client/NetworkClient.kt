@@ -1,6 +1,9 @@
 package me.srikavin.quiz.network.client
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.srikavin.quiz.network.common.MessageRouter
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.model.RejoinToken
@@ -20,9 +23,9 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
     lateinit var input: BufferedInputStream
     lateinit var output: BufferedOutputStream
     var rejoinToken: RejoinToken =
-        RejoinToken(UUID.randomUUID())
+            RejoinToken(UUID.randomUUID())
     var userId: UserID =
-        UserID(UUID.randomUUID())
+            UserID(UUID.randomUUID())
 
     var connected: Boolean = false
 
@@ -57,8 +60,6 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
             if (rejoinToken != null) {
                 welcome.put(rejoinToken)
             }
-            welcome.put(UUID.fromString("b3cf6175-ecd5-495b-b32f-7da60d25e3f9"))
-
 
             output.write(welcome.array())
             output.flush()
@@ -84,8 +85,10 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
         var total = 0
         while (true) {
             if (connected) {
-                while(queue.isNotEmpty()){
-
+                while (queue.isNotEmpty()) {
+                    val base = queue.poll()
+                    val serialized = packetRouter.serializeMessage(base)
+                    output.write(serialized.array())
                 }
                 if (inProgress == total) {
                     //Hand-off to packet router
