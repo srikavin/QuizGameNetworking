@@ -1,0 +1,272 @@
+package me.srikavin.quiz.network.server
+
+
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import me.srikavin.quiz.network.common.MessageRouter
+import me.srikavin.quiz.network.common.model.GameClient
+import me.srikavin.quiz.network.common.model.RejoinToken
+import me.srikavin.quiz.network.common.put
+import mu.KotlinLogging
+import java.io.BufferedInputStream
+import java.io.BufferedOutputStream
+import java.io.IOException
+import java.net.ServerSocket
+import java.net.Socket
+import java.nio.ByteBuffer
+import java.time.Instant
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
+
+
+private data class TemporaryClient(val socket: Socket, val kickTime: Instant) {
+    val inputStream: BufferedInputStream = socket.getInputStream().buffered()
+    val outputStream: BufferedOutputStream = socket.getOutputStream().buffered()
+
+    fun toNetworkClient(rejoinToken: RejoinToken, uuid: UUID = UUID.randomUUID()): NetworkClient {
+        return NetworkClient(uuid, socket, inputStream, outputStream)
+    }
+}
+
+const val MAX_PACKET_SIZE = 1024
+
+class Server(private val socket: ServerSocket) {
+    private val logger = KotlinLogging.logger {}
+    private val gameClientMap = ConcurrentHashMap<UUID, GameClient>()
+    private val clients = ArrayList<NetworkClient>()
+    private val newClients = ArrayList<NetworkClient>()
+    private val newClientsMutex = Mutex()
+    private val temporaryClientsMutex = Mutex()
+    private val temporaryClients = ArrayList<TemporaryClient>()
+    private val clientsToRemoveMutex = Mutex()
+    private val clientsToRemove = ArrayList<TemporaryClient>()
+    private val messageRouter = MessageRouter()
+    private val authService = AuthService()
+
+    fun start() {
+        logger.info { "Initializing server" }
+        GlobalScope.launch {
+            logger.info { "Initializing connection coroutine" }
+            handleConnections()
+        }
+
+        GlobalScope.launch {
+            logger.info { "Initializing message handling routine" }
+            while (true) {
+                processMessages()
+                delay(20)
+            }
+        }
+
+        runBlocking {
+            logger.info { "Initializing new client connection routine" }
+            processNewClients()
+        }
+    }
+
+    private suspend fun processMessages() {
+        newClientsMutex.withLock {
+            clients.addAll(newClients)
+            newClients.forEach { newClient ->
+                if (gameClientMap.contains(newClient.id)) {
+                    gameClientMap[newClient.id]!!.backing = newClient
+                } else {
+                    gameClientMap[newClient.id] = GameClient(newClient)
+                }
+            }
+            newClients.clear()
+        }
+
+        val toRemove = ArrayList<NetworkClient>()
+
+        gameClientMap.forEach { _, gameClient ->
+            val client = gameClient.backing as NetworkClient
+            try {
+                val reader = client.reader
+
+                if (client.isBusy.get()) {
+                    return@forEach
+                }
+
+                // If the message queue is not empty, process the messages asynchronously to avoid blocking the event loop
+                if (client.messageQueue.isNotEmpty()) {
+                    GlobalScope.launch {
+                        while (client.messageQueue.isNotEmpty()) {
+                            client.isBusy.set(true)
+                            val message = client.messageQueue.poll()
+                            if (message != null) {
+                                val serialized = messageRouter.serializeMessage(message)
+                                client.writer.write(serialized.array())
+                                client.writer.flush()
+                            }
+                        }
+                        client.isBusy.set(false)
+                    }
+                    return@forEach
+                }
+
+                if (reader.available() == 0) {
+                    return@forEach
+                }
+
+                // Start a new transmission
+                if (client.inProgress == -1) {
+                    val lengthArray = ByteArray(4)
+
+                    if (reader.read(lengthArray) == 4) {
+                        client.total = lengthArray.wrap().int
+                        client.inProgress = 0
+                    } else {
+                        logger.warn { "Client kicked for invalid packet size: $client" }
+                        throw IOException("Invalid packet size; expecting size 4")
+                    }
+
+                    if (client.total > MAX_PACKET_SIZE) {
+                        logger.warn { "Client kicked for large packet size: $client" }
+                        throw IOException("Packet size is too large ${client.total}")
+                    }
+                }
+
+                // Continue to read non-blocking
+                if (client.inProgress != client.total) {
+                    val message = ByteArray(1)
+                    while (reader.available() != 0) {
+                        client.reader.read(message)
+                        client.buffer.writeBytes(message)
+                        client.inProgress++
+                    }
+                }
+
+                // Once a message is done, process it
+                if (client.inProgress == client.total) {
+                    messageRouter.handlePacket(gameClient, client.buffer.toByteArray().wrap())
+                    client.inProgress = -1
+                    client.total = 0
+                    return@forEach
+                }
+
+            } catch (t: IOException) {
+                t.printStackTrace()
+                toRemove.add(client)
+                try {
+                    client.socket.close()
+                } catch (ex: Exception) {
+                    ex.printStackTrace()
+                }
+                return@forEach
+            }
+        }
+
+        clients.removeAll(toRemove)
+        toRemove.forEach { client -> client.isConnected.set(false) }
+        toRemove.clear()
+    }
+
+    private suspend fun handleConnections() {
+        while (true) {
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val accept = socket.accept()
+            handleClientConnect(accept)
+        }
+    }
+
+    private suspend fun handleClientConnect(socket: Socket) {
+//        Set a timeout of 20 seconds for reads on the socket
+        socket.soTimeout = 20000
+
+//        Give clients 15 seconds to send a connect packet before getting kicked
+        val kickTime = Instant.now().plusSeconds(15)
+        val newClient = TemporaryClient(socket, kickTime)
+
+
+        temporaryClientsMutex.withLock {
+            temporaryClients.add(newClient)
+        }
+
+    }
+
+    private suspend fun removeClient(client: TemporaryClient) {
+        clientsToRemoveMutex.withLock {
+            clientsToRemove.add(client)
+        }
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun processNewClients() {
+        while (true) {
+            if (temporaryClientsMutex.tryLock("Process New Clients")) {
+                clientsToRemoveMutex.withLock {
+                    clientsToRemove.forEach { it.socket.close() }
+                    temporaryClients.removeAll(clientsToRemove)
+                }
+
+                val iterator = temporaryClients.iterator()
+                for (client in iterator) {
+                    iterator.remove()
+
+                    GlobalScope.launch {
+                        try {
+                            val input = client.inputStream
+
+                            val lengthBuffer = input.readNBytes(4).wrap()
+                            val length = lengthBuffer.int
+
+                            //Verify message received is connect packet
+                            if (length != 16) {
+                                logger.warn { "Connecting client sent wrong data length: $length" }
+                                removeClient(client)
+                                return@launch
+                            }
+
+                            val bufferRaw = input.readNBytes(length)
+
+                            //Verify amount of data read is valid
+                            if (bufferRaw.size != length) {
+                                logger.warn { "Client sent wrong data length: $length != ${bufferRaw.size}" }
+                                removeClient(client)
+                                return@launch
+                            }
+
+                            val buffer = bufferRaw.wrap()
+                            val token = authService.getRejoinToken(buffer)
+
+                            println(token)
+
+                            val user = authService.getUUID(token)
+
+                            val networkClient = client.toNetworkClient(user.first, user.second)
+
+                            newClientsMutex.withLock {
+                                logger.info { "New client joined: $networkClient" }
+                                newClients.add(networkClient)
+                            }
+
+                            val response = ByteBuffer.allocate(32)
+                            response.put(user.first.token)
+                            response.put(user.second)
+
+                            client.outputStream.write(response.array())
+                            client.outputStream.flush()
+
+
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                            removeClient(client)
+                        }
+                    }
+                }
+                temporaryClientsMutex.unlock("Process New Clients")
+            }
+        }
+    }
+}
+
+
+private fun ByteArray.wrap(): ByteBuffer {
+    return ByteBuffer.wrap(this)
+}
