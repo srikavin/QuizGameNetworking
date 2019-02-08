@@ -9,9 +9,6 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 internal class StateUpdateMessageSerializerTest {
-
-
-
     @Test
     fun messageSerialization() {
         val serializer = StateUpdateMessageSerializer()
