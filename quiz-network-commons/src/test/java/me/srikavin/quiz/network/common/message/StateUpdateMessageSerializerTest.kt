@@ -1,10 +1,10 @@
 package me.srikavin.quiz.network.common.message
 
-import me.srikavin.quiz.network.common.model.GamePlayer
-import me.srikavin.quiz.network.common.model.Quiz
-import me.srikavin.quiz.network.common.model.QuizAnswer
-import me.srikavin.quiz.network.common.model.QuizQuestion
-import org.junit.jupiter.api.Assertions.*
+import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizAnswer
+import me.srikavin.quiz.network.common.model.data.QuizQuestion
+import me.srikavin.quiz.network.common.model.game.GamePlayer
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.ByteBuffer
 import java.util.*

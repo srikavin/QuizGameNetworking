@@ -8,8 +8,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import me.srikavin.quiz.network.common.MessageRouter
-import me.srikavin.quiz.network.common.model.GameClient
-import me.srikavin.quiz.network.common.model.RejoinToken
+import me.srikavin.quiz.network.common.model.game.GameClient
+import me.srikavin.quiz.network.common.model.network.RejoinToken
 import me.srikavin.quiz.network.common.put
 import mu.KotlinLogging
 import java.io.BufferedInputStream

@@ -2,7 +2,13 @@ package me.srikavin.quiz.network.common.message
 
 import me.srikavin.quiz.network.common.getString
 import me.srikavin.quiz.network.common.getUUID
-import me.srikavin.quiz.network.common.model.*
+import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizAnswer
+import me.srikavin.quiz.network.common.model.data.QuizQuestion
+import me.srikavin.quiz.network.common.model.game.GamePlayer
+import me.srikavin.quiz.network.common.model.game.countBytes
+import me.srikavin.quiz.network.common.model.game.deserializeGamePlayer
+import me.srikavin.quiz.network.common.model.game.serialize
 import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*

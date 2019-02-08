@@ -6,8 +6,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.srikavin.quiz.network.common.MessageRouter
 import me.srikavin.quiz.network.common.message.MessageBase
-import me.srikavin.quiz.network.common.model.RejoinToken
-import me.srikavin.quiz.network.common.model.UserID
+import me.srikavin.quiz.network.common.model.data.UserID
+import me.srikavin.quiz.network.common.model.network.RejoinToken
 import me.srikavin.quiz.network.common.put
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream

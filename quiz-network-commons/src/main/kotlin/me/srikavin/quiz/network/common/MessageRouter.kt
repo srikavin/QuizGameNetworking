@@ -3,8 +3,7 @@ package me.srikavin.quiz.network.common
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.message.MessageIdentifier
 import me.srikavin.quiz.network.common.message.MessageSerializer
-import me.srikavin.quiz.network.common.model.GameClient
-import java.lang.RuntimeException
+import me.srikavin.quiz.network.common.model.game.GameClient
 import java.nio.ByteBuffer
 
 interface MessageHandler<in T : MessageBase> {

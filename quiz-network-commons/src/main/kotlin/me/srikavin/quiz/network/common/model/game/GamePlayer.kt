@@ -1,4 +1,4 @@
-package me.srikavin.quiz.network.common.model
+package me.srikavin.quiz.network.common.model.game
 
 import me.srikavin.quiz.network.common.getString
 import me.srikavin.quiz.network.common.getUUID

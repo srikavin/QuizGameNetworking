@@ -1,4 +1,4 @@
-package me.srikavin.quiz.network.common.model
+package me.srikavin.quiz.network.common.model.data
 
 import java.util.*
 

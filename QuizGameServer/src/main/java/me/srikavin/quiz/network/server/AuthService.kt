@@ -1,6 +1,6 @@
 package me.srikavin.quiz.network.server
 
-import me.srikavin.quiz.network.common.model.RejoinToken
+import me.srikavin.quiz.network.common.model.network.RejoinToken
 import java.nio.ByteBuffer
 import java.util.*
 

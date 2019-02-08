@@ -1,7 +1,7 @@
 package me.srikavin.quiz.network.server
 
 import me.srikavin.quiz.network.common.message.MessageBase
-import me.srikavin.quiz.network.common.model.BackingClient
+import me.srikavin.quiz.network.common.model.game.BackingClient
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.ByteArrayOutputStream
