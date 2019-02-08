@@ -21,7 +21,7 @@ data class GameState(
         val currentQuestion: Int
 )
 
-data class StateUpdateMessage(val state: GameState) : MessageBase(CONNECT_PACKET_ID)
+data class StateUpdateMessage(val state: GameState) : MessageBase(UPDATE_STATE_PACKET_ID)
 
 class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
     override fun toBytes(t: StateUpdateMessage): ByteBuffer {
