@@ -45,7 +45,7 @@ fun GamePlayer.serialize(buffer: ByteBuffer) {
 
 fun GamePlayer.countBytes(): Int {
     val array = name.toByteArray(Charsets.UTF_8)
-    return 32 + 4 + 4 + array.size + 4 + avatar.size
+    return 16 + 4 + 4 + array.size + 4 + avatar.size
 }
 
 fun deserializeGamePlayer(buffer: ByteBuffer) : GamePlayer {
