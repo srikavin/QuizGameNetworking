@@ -27,6 +27,7 @@ internal class StateUpdateMessageSerializerTest {
         val message = StateUpdateMessage(GameState(quiz, Date(), listOf(player), 1))
 
         val serialized = serializer.toBytes(message)
+
         serialized.flip()
 
         val unserialized = serializer.fromBytes(serialized)
