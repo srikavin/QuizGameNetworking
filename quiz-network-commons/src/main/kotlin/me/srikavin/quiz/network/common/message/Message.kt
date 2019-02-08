@@ -6,7 +6,7 @@ inline class MessageIdentifier(val value: Byte)
 
 interface MessageSerializer<T : MessageBase> {
     fun toBytes(t: T): ByteBuffer
-    fun fromBytes(bytes: ByteBuffer): T
+    fun fromBytes(buffer: ByteBuffer): T
 }
 
 abstract class MessageBase(val identifier: MessageIdentifier)

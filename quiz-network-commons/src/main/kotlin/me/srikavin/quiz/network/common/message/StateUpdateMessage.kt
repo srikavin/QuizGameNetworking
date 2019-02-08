@@ -2,10 +2,7 @@ package me.srikavin.quiz.network.common.message
 
 import me.srikavin.quiz.network.common.getString
 import me.srikavin.quiz.network.common.getUUID
-import me.srikavin.quiz.network.common.model.GamePlayer
-import me.srikavin.quiz.network.common.model.Quiz
-import me.srikavin.quiz.network.common.model.QuizAnswer
-import me.srikavin.quiz.network.common.model.QuizQuestion
+import me.srikavin.quiz.network.common.model.*
 import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*
@@ -14,19 +11,54 @@ import kotlin.collections.ArrayList
 data class GameState(
         val quiz: Quiz,
         val timeLeft: Date,
-        val player: GamePlayer,
+        val players: List<GamePlayer>,
         val currentQuestion: Int
 )
 
-class StateUpdateMessage(val state: GameState) : MessageBase(CONNECT_PACKET_ID)
+data class StateUpdateMessage(val state: GameState) : MessageBase(CONNECT_PACKET_ID)
 
 class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
     override fun toBytes(t: StateUpdateMessage): ByteBuffer {
-        return null!!
+        var playerLengths = 0
+
+        for (player in t.state.players) {
+            playerLengths += player.countBytes()
+        }
+        val length = 8 +               // Long for epoch
+                count(t.state.quiz) +       // Quiz
+                4 +                        // Current question
+                4 +                        // Number of players
+                playerLengths
+
+        val buffer = ByteBuffer.allocate(length)
+
+        buffer.putLong(t.state.timeLeft.time)
+        serializeQuiz(buffer, t.state.quiz)
+        buffer.putInt(t.state.currentQuestion)
+        buffer.putInt(t.state.players.size)
+
+        for (player in t.state.players) {
+            player.serialize(buffer)
+        }
+        return buffer
     }
 
-    override fun fromBytes(bytes: ByteBuffer): StateUpdateMessage {
-        return StateUpdateMessage(null!!)
+    override fun fromBytes(buffer: ByteBuffer): StateUpdateMessage {
+        val timeEpoch = buffer.long
+        val timeLeft = Date(timeEpoch)
+
+        val quiz = deserializeQuiz(buffer)
+        val currentQuestion = buffer.int
+        val playerSize = buffer.int
+        val players = ArrayList<GamePlayer>(playerSize)
+
+        println("quiz = $quiz")
+
+        repeat(playerSize) {
+            players.add(deserializeGamePlayer(buffer))
+        }
+
+        return StateUpdateMessage(GameState(quiz, timeLeft, players, currentQuestion))
     }
 
     fun deserializeQuiz(buffer: ByteBuffer): Quiz {
@@ -46,10 +78,7 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
     }
 
 
-    fun serializeQuiz(quiz: Quiz): ByteBuffer {
-        val length = count(quiz)
-        val buffer = ByteBuffer.allocate(length)
-
+    fun serializeQuiz(buffer: ByteBuffer, quiz: Quiz) {
         buffer.put(quiz.id)
         buffer.put(quiz.contents)
         buffer.put(quiz.title)
@@ -58,7 +87,6 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
         for (e in quiz.questions) {
             serializeQuizQuestion(buffer, e)
         }
-        return buffer
     }
 
     private fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
@@ -97,7 +125,7 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
         buffer.put(quizAnswer.contents)
     }
 
-    private fun count(quiz: Quiz): Int {
+    fun count(quiz: Quiz): Int {
         val contentsArray = quiz.contents.toByteArray(Charsets.UTF_8)
         val titleArray = quiz.title.toByteArray(Charsets.UTF_8)
         var questionLength = 0
