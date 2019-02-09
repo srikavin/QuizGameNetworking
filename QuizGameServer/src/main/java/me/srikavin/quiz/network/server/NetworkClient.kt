@@ -11,18 +11,18 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class NetworkClient(
-    val id: UUID,
-    val socket: Socket,
-    val reader: BufferedInputStream,
-    val writer: BufferedOutputStream,
-    val buffer: ByteArrayOutputStream = ByteArrayOutputStream(),
-    var inProgress: Int = -1,
-    var total: Int = -1
+        val id: UUID,
+        val socket: Socket,
+        val reader: BufferedInputStream,
+        val writer: BufferedOutputStream,
+        val buffer: ByteArrayOutputStream = ByteArrayOutputStream(),
+        var inProgress: Int = -1,
+        var total: Int = -1
 ) : BackingClient {
-    val messageQueue: Queue<MessageBase> = ConcurrentLinkedQueue()
-    val shouldKick = AtomicBoolean(false)
-    var isBusy = AtomicBoolean(false)
-    var isConnected = AtomicBoolean(true)
+    internal val messageQueue: Queue<MessageBase> = ConcurrentLinkedQueue()
+    internal val shouldKick = AtomicBoolean(false)
+    internal var isBusy = AtomicBoolean(false)
+    internal var isConnected = AtomicBoolean(true)
 
     override fun kick() {
         shouldKick.set(true)

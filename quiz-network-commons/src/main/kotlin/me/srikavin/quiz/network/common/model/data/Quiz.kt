@@ -1,38 +1,44 @@
 package me.srikavin.quiz.network.common.model.data
 
 import me.srikavin.quiz.network.common.getString
-import me.srikavin.quiz.network.common.getUUID
 import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*
 
-data class Quiz(
-        val id: UUID,
-        val title: String,
-        val questions: List<QuizQuestion>,
-        val contents: String
-)
+interface Quiz {
+    val id: ResourceId
+    val title: String
+    val questions: List<QuizQuestion>
+    val description: String
+}
+
+data class NetworkQuiz(
+        override val id: ResourceId,
+        override val title: String,
+        override val questions: List<QuizQuestion>,
+        override val description: String
+) : Quiz
 
 fun Quiz.countBytes(): Int {
-    val contentsArray = this.contents.toByteArray(Charsets.UTF_8)
+    val contentsArray = this.description.toByteArray(Charsets.UTF_8)
     val titleArray: ByteArray = this.title.toByteArray(Charsets.UTF_8)
     var questionLength = 0
     for (e in this.questions) {
         questionLength += e.countBytes()
     }
 
-    return 16 +
+    return id.countBytes() +
             4 + // Int for size of title
             titleArray.size + // The title string
-            4 + // Int for size of contents
-            contentsArray.size + // The contents
+            4 + // Int for size of description
+            contentsArray.size + // The description
             4 + // The number of questions
             questionLength // The questions
 }
 
 fun Quiz.serialize(buffer: ByteBuffer) {
     buffer.put(this.id)
-    buffer.put(this.contents)
+    buffer.put(this.description)
     buffer.put(this.title)
     buffer.putInt(this.questions.size)
 
@@ -42,7 +48,7 @@ fun Quiz.serialize(buffer: ByteBuffer) {
 }
 
 fun deserializeQuiz(buffer: ByteBuffer): Quiz {
-    val id = buffer.getUUID()
+    val id = buffer.getObjectID()
     val contents = buffer.getString()
     val title = buffer.getString()
 
@@ -54,5 +60,5 @@ fun deserializeQuiz(buffer: ByteBuffer): Quiz {
         questions.add(deserializeQuizQuestion(buffer))
     }
 
-    return Quiz(id, title, questions, contents)
+    return NetworkQuiz(id, title, questions, contents)
 }

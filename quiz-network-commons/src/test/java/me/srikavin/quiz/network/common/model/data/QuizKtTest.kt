@@ -3,13 +3,12 @@ package me.srikavin.quiz.network.common.model.data
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.ByteBuffer
-import java.util.*
 
 internal class QuizKtTest {
     @Test
     fun serializeQuizEmpty() {
         val questions = listOf<QuizQuestion>()
-        val quiz = Quiz(UUID.randomUUID(), "testing quiz serialization", questions, "Quiz description")
+        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "Quiz description")
 
         val serialized = ByteBuffer.allocate(quiz.countBytes())
 
@@ -27,13 +26,13 @@ internal class QuizKtTest {
     @Test
     fun serializeQuiz() {
         val answers = listOf(
-                QuizAnswer(UUID.randomUUID(), "Answer A", true),
-                QuizAnswer(UUID.randomUUID(), "Answer B", true),
-                QuizAnswer(UUID.randomUUID(), "Answer C", false),
-                QuizAnswer(UUID.randomUUID(), "Answer D", false)
+                NetworkQuizAnswer(ResourceId("a1"), "Answer A", true),
+                NetworkQuizAnswer(ResourceId("a2"), "Answer B", true),
+                NetworkQuizAnswer(ResourceId("a3"), "Answer C", false),
+                NetworkQuizAnswer(ResourceId("a4"), "Answer D", false)
         )
-        val questions = listOf(QuizQuestion(UUID.randomUUID(), answers, "Sample Question"))
-        val quiz = Quiz(UUID.randomUUID(), "testing quiz serialization", questions, "Quiz description")
+        val questions = listOf(NetworkQuizQuestion(ResourceId("q1"), answers, "Sample Question"))
+        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "Quiz description")
 
         val serialized = ByteBuffer.allocate(quiz.countBytes())
 

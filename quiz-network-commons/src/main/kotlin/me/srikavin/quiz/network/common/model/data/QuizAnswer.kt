@@ -1,23 +1,28 @@
 package me.srikavin.quiz.network.common.model.data
 
 import me.srikavin.quiz.network.common.getString
-import me.srikavin.quiz.network.common.getUUID
 import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
-import java.util.*
 
-data class QuizAnswer(
-        val id: UUID,
-        val contents: String,
-        val isCorrect: Boolean
-)
+
+interface QuizAnswer {
+    val id: ResourceId
+    val contents: String
+    val isCorrect: Boolean
+}
+
+data class NetworkQuizAnswer(
+        override val id: ResourceId,
+        override val contents: String,
+        override val isCorrect: Boolean
+) : QuizAnswer
 
 fun QuizAnswer.countBytes(): Int {
     val contentsArray = this.contents.toByteArray(Charsets.UTF_8)
-    return 16 +  // UUID representing question
+    return id.countBytes() +  // UUID representing question
             1 + // Bit for if the value is correct
-            4 +  // Int for size of contents
-            contentsArray.size // Size of contents
+            4 +  // Int for size of description
+            contentsArray.size // Size of description
 
 }
 
@@ -28,9 +33,9 @@ fun QuizAnswer.serialize(buffer: ByteBuffer) {
 }
 
 fun deserializeQuizAnswer(buffer: ByteBuffer): QuizAnswer {
-    val id = buffer.getUUID()
+    val id = buffer.getObjectID()
     val isCorrect = buffer.get() == 1.toByte()
     val contents = buffer.getString()
 
-    return QuizAnswer(id, contents, isCorrect)
+    return NetworkQuizAnswer(id, contents, isCorrect)
 }

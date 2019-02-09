@@ -7,7 +7,7 @@ import me.srikavin.quiz.network.common.model.game.GameClient
 import java.nio.ByteBuffer
 
 interface MessageHandler<in T : MessageBase> {
-    fun handle(message: T) {
+    fun handle(client: GameClient, message: T) {
 
     }
 }
@@ -15,7 +15,7 @@ interface MessageHandler<in T : MessageBase> {
 class MessageRouter {
     private val packetMap: MutableMap<MessageIdentifier, MessageSerializer<in MessageBase>> = HashMap()
     private val handlerMap: MutableMap<MessageIdentifier, Set<MessageHandler<MessageBase>>> =
-        mutableMapOf<MessageIdentifier, Set<MessageHandler<MessageBase>>>().withDefault { HashSet() }
+            mutableMapOf<MessageIdentifier, Set<MessageHandler<MessageBase>>>().withDefault { HashSet() }
 
     @Synchronized
     fun handlePacket(client: GameClient, message: ByteBuffer) {
@@ -29,18 +29,19 @@ class MessageRouter {
     fun handlePacket(client: GameClient, message: MessageBase) {
         println(message.javaClass.simpleName)
         handlerMap[message.identifier].orEmpty().forEach {
-            it.handle(message)
+            it.handle(client, message)
         }
     }
 
     @Synchronized
     fun serializeMessage(message: MessageBase): ByteBuffer {
         return packetMap.get(message.identifier)?.toBytes(message)
-            ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
+                ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
     }
 
     @Synchronized
     fun registerPacket(type: MessageIdentifier, serializer: MessageSerializer<in MessageBase>) {
+        packetMap[type] = serializer
     }
 
     @Synchronized

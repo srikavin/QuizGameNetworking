@@ -93,6 +93,11 @@ class Server(private val socket: ServerSocket) {
                     return@forEach
                 }
 
+                if (client.shouldKick.get()) {
+                    toRemove.add(client)
+                    return@forEach
+                }
+
                 // If the message queue is not empty, process the messages asynchronously to avoid blocking the event loop
                 if (client.messageQueue.isNotEmpty()) {
                     GlobalScope.launch {

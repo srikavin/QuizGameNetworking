@@ -1,16 +1,21 @@
 package me.srikavin.quiz.network.common.model.data
 
 import me.srikavin.quiz.network.common.getString
-import me.srikavin.quiz.network.common.getUUID
 import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*
 
-data class QuizQuestion(
-        val id: UUID,
-        val answers: List<QuizAnswer>,
-        val contents: String
-)
+interface QuizQuestion {
+    val id: ResourceId
+    val answers: List<QuizAnswer>
+    val contents: String
+}
+
+data class NetworkQuizQuestion(
+        override val id: ResourceId,
+        override val answers: List<QuizAnswer>,
+        override val contents: String
+) : QuizQuestion
 
 fun QuizQuestion.countBytes(): Int {
     val contentsArray = this.contents.toByteArray(Charsets.UTF_8)
@@ -19,9 +24,9 @@ fun QuizQuestion.countBytes(): Int {
         answerLength += e.countBytes()
     }
 
-    return 16 + // UUID
-            4 + // Int for size of contents
-            contentsArray.size + // The length of contents
+    return id.countBytes() + // UUID
+            4 + // Int for size of description
+            contentsArray.size + // The length of description
             4 + // The number of answers
             answerLength // The answers
 }
@@ -36,7 +41,7 @@ fun QuizQuestion.serialize(buffer: ByteBuffer) {
 }
 
 fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
-    val id = buffer.getUUID()
+    val id = buffer.getObjectID()
     val contents = buffer.getString()
     val answersSize = buffer.int
 
@@ -45,5 +50,5 @@ fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
     repeat(answersSize) {
         answers.add(deserializeQuizAnswer(buffer))
     }
-    return QuizQuestion(id, answers, contents)
+    return NetworkQuizQuestion(id, answers, contents)
 }
