@@ -46,6 +46,8 @@ class MessageRouter {
 
     @Synchronized
     fun <T : MessageBase> registerHandler(type: MessageIdentifier, handler: MessageHandler<T>) {
-        handlerMap.putIfAbsent(type, HashSet())
+        if (!handlerMap.containsKey(type)) {
+            handlerMap[type] = HashSet()
+        }
     }
 }

@@ -7,4 +7,15 @@
     <groupId>me.srikavin</groupId>
     <artifactId>QuizNetworking</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+    </properties>
+
+    <modules>
+        <module>quiz-network-commons</module>
+        <module>QuizGameClient</module>
+        <module>QuizGameServer</module>
+    </modules>
 </project>

@@ -99,10 +99,15 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
                 if (input.available() > 0) {
                     if (inProgress != -1) {
                         if (inProgress < total) {
-                            buffer.put(input.readNBytes(2))
+                            val readAmount = if (total - inProgress < 32) total - inProgress else 32
+                            val buf = ByteArray(readAmount)
+                            input.read(buf)
+                            buffer.put(buf)
                         }
                     } else {
-                        total = ByteBuffer.wrap(input.readNBytes(4)).int
+                        val length = ByteArray(4)
+                        input.read(length)
+                        total = ByteBuffer.wrap(length).int
                         buffer = ByteBuffer.allocate(total)
                         inProgress = 0
                     }

@@ -10,6 +10,8 @@
 
     <properties>
         <kotlin.version>1.3.21</kotlin.version>
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -26,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>me.srikavin</groupId>
-            <artifactId>quiz-network-commmons</artifactId>
+            <artifactId>quiz-network-commons</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
