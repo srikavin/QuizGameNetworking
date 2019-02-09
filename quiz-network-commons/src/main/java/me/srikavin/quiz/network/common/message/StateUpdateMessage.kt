@@ -1,9 +1,7 @@
 package me.srikavin.quiz.network.common.message
 
 import me.srikavin.quiz.network.common.model.data.Quiz
-import me.srikavin.quiz.network.common.model.data.countBytes
 import me.srikavin.quiz.network.common.model.data.deserializeQuiz
-import me.srikavin.quiz.network.common.model.data.serialize
 import me.srikavin.quiz.network.common.model.game.GamePlayer
 import me.srikavin.quiz.network.common.model.game.countBytes
 import me.srikavin.quiz.network.common.model.game.deserializeGamePlayer

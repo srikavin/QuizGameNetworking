@@ -1,6 +1,5 @@
-package me.srikavin.quiz.network.test.model.data
+package me.srikavin.quiz.network.common.model.data
 
-import me.srikavin.quiz.network.common.model.data.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.ByteBuffer

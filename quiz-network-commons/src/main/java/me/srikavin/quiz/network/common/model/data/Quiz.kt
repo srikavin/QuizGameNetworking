@@ -10,6 +10,33 @@ interface Quiz {
     val title: String
     val questions: List<QuizQuestion>
     val description: String
+    fun countBytes(): Int {
+        val contentsArray = this.description.toByteArray(Charsets.UTF_8)
+        val titleArray: ByteArray = this.title.toByteArray(Charsets.UTF_8)
+        var questionLength = 0
+        for (e in this.questions) {
+            questionLength += e.countBytes()
+        }
+
+        return id.countBytes() +
+                4 + // Int for size of title
+                titleArray.size + // The title string
+                4 + // Int for size of description
+                contentsArray.size + // The description
+                4 + // The number of questions
+                questionLength // The questions
+    }
+
+    fun serialize(buffer: ByteBuffer) {
+        buffer.put(this.id)
+        buffer.put(this.description)
+        buffer.put(this.title)
+        buffer.putInt(this.questions.size)
+
+        for (e: QuizQuestion in this.questions) {
+            e.serialize(buffer)
+        }
+    }
 }
 
 data class NetworkQuiz(
@@ -19,33 +46,6 @@ data class NetworkQuiz(
         override val description: String
 ) : Quiz
 
-fun Quiz.countBytes(): Int {
-    val contentsArray = this.description.toByteArray(Charsets.UTF_8)
-    val titleArray: ByteArray = this.title.toByteArray(Charsets.UTF_8)
-    var questionLength = 0
-    for (e in this.questions) {
-        questionLength += e.countBytes()
-    }
-
-    return id.countBytes() +
-            4 + // Int for size of title
-            titleArray.size + // The title string
-            4 + // Int for size of description
-            contentsArray.size + // The description
-            4 + // The number of questions
-            questionLength // The questions
-}
-
-fun Quiz.serialize(buffer: ByteBuffer) {
-    buffer.put(this.id)
-    buffer.put(this.description)
-    buffer.put(this.title)
-    buffer.putInt(this.questions.size)
-
-    for (e: QuizQuestion in this.questions) {
-        e.serialize(buffer)
-    }
-}
 
 fun deserializeQuiz(buffer: ByteBuffer): Quiz {
     val id = buffer.getObjectID()

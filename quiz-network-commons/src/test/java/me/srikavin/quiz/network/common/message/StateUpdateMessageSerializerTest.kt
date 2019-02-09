@@ -1,8 +1,5 @@
-package me.srikavin.quiz.network.test.message
+package me.srikavin.quiz.network.common.message
 
-import me.srikavin.quiz.network.common.message.GameState
-import me.srikavin.quiz.network.common.message.StateUpdateMessage
-import me.srikavin.quiz.network.common.message.StateUpdateMessageSerializer
 import me.srikavin.quiz.network.common.model.data.NetworkQuiz
 import me.srikavin.quiz.network.common.model.data.NetworkQuizAnswer
 import me.srikavin.quiz.network.common.model.data.NetworkQuizQuestion

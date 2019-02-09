@@ -41,7 +41,7 @@
     </dependencies>
 
     <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -71,7 +71,7 @@
                     </args>
                     <sourceDirs>
                         <source>src/main/java</source>
-                        <source>src/main/kotlin</source>
+                        <source>src/main/java</source>
                         <source>src/main/resources</source>
                     </sourceDirs>
                 </configuration>
