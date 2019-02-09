@@ -1,8 +1,7 @@
 package me.srikavin.quiz.network.common
 
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
 import java.nio.ByteBuffer
 import java.util.*
 
@@ -10,7 +9,7 @@ internal class UtilKtTest {
 
     @Test
     fun getUUID() {
-        val uuid = UUID.randomUUID()
+        val uuid: UUID = UUID.randomUUID()
         val buffer = ByteBuffer.allocate(16)
         buffer.put(uuid)
 
