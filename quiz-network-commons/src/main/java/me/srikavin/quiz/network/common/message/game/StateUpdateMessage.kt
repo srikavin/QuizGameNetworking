@@ -1,18 +1,20 @@
-package me.srikavin.quiz.network.common.message
+package me.srikavin.quiz.network.common.message.game
 
+import me.srikavin.quiz.network.common.message.MessageBase
+import me.srikavin.quiz.network.common.message.MessageSerializer
+import me.srikavin.quiz.network.common.message.STATE_UPDATE_PACKET_ID
 import me.srikavin.quiz.network.common.model.data.Quiz
 import me.srikavin.quiz.network.common.model.data.deserializeQuiz
 import me.srikavin.quiz.network.common.model.game.GamePlayer
 import me.srikavin.quiz.network.common.model.game.countBytes
 import me.srikavin.quiz.network.common.model.game.deserializeGamePlayer
 import me.srikavin.quiz.network.common.model.game.serialize
+import org.threeten.bp.Instant
 import java.nio.ByteBuffer
-import java.util.*
-import kotlin.collections.ArrayList
 
 data class GameState(
         val quiz: Quiz,
-        val timeLeft: Date,
+        val timeLeft: Instant,
         val players: List<GamePlayer>,
         val currentQuestion: Int
 )
@@ -34,7 +36,7 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
 
         val buffer = ByteBuffer.allocate(length)
 
-        buffer.putLong(t.state.timeLeft.time)
+        buffer.putLong(t.state.timeLeft.toEpochMilli())
         t.state.quiz.serialize(buffer)
         buffer.putInt(t.state.currentQuestion)
         buffer.putInt(t.state.players.size)
@@ -47,7 +49,7 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
 
     override fun fromBytes(buffer: ByteBuffer): StateUpdateMessage {
         val timeEpoch = buffer.long
-        val timeLeft = Date(timeEpoch)
+        val timeLeft = Instant.ofEpochMilli(timeEpoch)
 
         val quiz = deserializeQuiz(buffer)
         val currentQuestion = buffer.int

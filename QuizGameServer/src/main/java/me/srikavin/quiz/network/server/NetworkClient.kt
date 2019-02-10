@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 data class NetworkClient(
-        val id: UUID,
+        override val id: UUID,
         val socket: Socket,
         val reader: BufferedInputStream,
         val writer: BufferedOutputStream,

@@ -1,6 +1,6 @@
 package me.srikavin.quiz.network.common.model.network
 
-import me.srikavin.quiz.network.common.model.game.Game
+import me.srikavin.quiz.network.common.game.Game
 
 enum class MatchmakerStates(code: Byte) {
     SEARCHING(1),

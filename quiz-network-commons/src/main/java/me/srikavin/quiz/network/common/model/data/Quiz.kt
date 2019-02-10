@@ -48,7 +48,7 @@ data class NetworkQuiz(
 
 
 fun deserializeQuiz(buffer: ByteBuffer): Quiz {
-    val id = buffer.getObjectID()
+    val id = buffer.getResourceId()
     val contents = buffer.getString()
     val title = buffer.getString()
 

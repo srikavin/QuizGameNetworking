@@ -14,6 +14,6 @@ fun ByteBuffer.put(id: ResourceId) {
     this.put(id.idString)
 }
 
-fun ByteBuffer.getObjectID(): ResourceId {
+fun ByteBuffer.getResourceId(): ResourceId {
     return ResourceId(this.getString())
 }

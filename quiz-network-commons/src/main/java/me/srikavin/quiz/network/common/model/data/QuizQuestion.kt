@@ -41,7 +41,7 @@ fun QuizQuestion.serialize(buffer: ByteBuffer) {
 }
 
 fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
-    val id = buffer.getObjectID()
+    val id = buffer.getResourceId()
     val contents = buffer.getString()
     val answersSize = buffer.int
 

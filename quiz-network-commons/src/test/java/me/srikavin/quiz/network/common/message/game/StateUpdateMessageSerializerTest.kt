@@ -1,4 +1,4 @@
-package me.srikavin.quiz.network.common.message
+package me.srikavin.quiz.network.common.message.game
 
 import me.srikavin.quiz.network.common.model.data.NetworkQuiz
 import me.srikavin.quiz.network.common.model.data.NetworkQuizAnswer
@@ -7,6 +7,7 @@ import me.srikavin.quiz.network.common.model.data.ResourceId
 import me.srikavin.quiz.network.common.model.game.GamePlayer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.threeten.bp.Instant
 import java.util.*
 
 internal class StateUpdateMessageSerializerTest {
@@ -25,7 +26,7 @@ internal class StateUpdateMessageSerializerTest {
 
         val player = GamePlayer(UUID.randomUUID(), "testing player", 1234, ByteArray(12))
 
-        val message = StateUpdateMessage(GameState(quiz, Date(), listOf(player), 1))
+        val message = StateUpdateMessage(GameState(quiz, Instant.now(), listOf(player), 1))
 
         val serialized = serializer.toBytes(message)
 

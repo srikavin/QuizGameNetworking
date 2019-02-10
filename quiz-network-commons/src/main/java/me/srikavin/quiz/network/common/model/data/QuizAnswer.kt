@@ -33,7 +33,7 @@ fun QuizAnswer.serialize(buffer: ByteBuffer) {
 }
 
 fun deserializeQuizAnswer(buffer: ByteBuffer): QuizAnswer {
-    val id = buffer.getObjectID()
+    val id = buffer.getResourceId()
     val isCorrect = buffer.get() == 1.toByte()
     val contents = buffer.getString()
 
