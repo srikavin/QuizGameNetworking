@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../quiz-network-commons/QuizGameNetworkCommons.iml" filepath="$PROJECT_DIR$/../quiz-network-commons/QuizGameNetworkCommons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/quiz-network-commons.iml" filepath="$PROJECT_DIR$/quiz-network-commons.iml" />
     </modules>
   </component>
 </project>

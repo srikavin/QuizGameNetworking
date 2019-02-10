@@ -72,6 +72,11 @@
                         </configuration>
                     </execution>
                 </executions>
+                <configuration>
+                    <args>
+                        <arg>-XXLanguage:+InlineClasses</arg>
+                    </args>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
