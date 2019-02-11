@@ -11,4 +11,15 @@ interface BackingClient {
     fun isConnected(): Boolean
 }
 
-open class GameClient(var backing: BackingClient)
+open class GameClient(var backing: BackingClient) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is GameClient) {
+            return false
+        }
+        return backing.id == other.backing.id
+    }
+
+    override fun hashCode(): Int {
+        return backing.hashCode()
+    }
+}
