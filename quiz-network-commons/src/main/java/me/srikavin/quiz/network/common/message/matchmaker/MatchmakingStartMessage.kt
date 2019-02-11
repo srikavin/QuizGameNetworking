@@ -9,18 +9,18 @@ import me.srikavin.quiz.network.common.model.data.getResourceId
 import me.srikavin.quiz.network.common.model.data.put
 import java.nio.ByteBuffer
 
-class MatchMakingStartMessage(val quizId: ResourceId) : MessageBase(MATCHMAKER_START_PACKET_ID)
+class MatchmakingStartMessage(val quizId: ResourceId) : MessageBase(MATCHMAKER_START_PACKET_ID)
 
-class MatchMakingStartMessageSerializer : MessageSerializer<MatchMakingStartMessage> {
-    override fun toBytes(t: MatchMakingStartMessage): ByteBuffer {
+class MatchmakingStartMessageSerializer : MessageSerializer<MatchmakingStartMessage> {
+    override fun toBytes(t: MatchmakingStartMessage): ByteBuffer {
         val buffer = ByteBuffer.allocate(t.quizId.countBytes())
         buffer.put(t.quizId)
         return buffer
     }
 
-    override fun fromBytes(buffer: ByteBuffer): MatchMakingStartMessage {
+    override fun fromBytes(buffer: ByteBuffer): MatchmakingStartMessage {
         val resourceId = buffer.getResourceId()
-        return MatchMakingStartMessage(resourceId)
+        return MatchmakingStartMessage(resourceId)
     }
 
 }

@@ -10,7 +10,7 @@ import me.srikavin.quiz.network.common.model.game.GameClient
  * Handles forwarding server packets to the appropriate room or matchmaker
  */
 open class GameListener(messageRouter: MessageRouter) {
-    private val clientRoomMap: MutableMap<GameClient, Game> = mutableMapOf()
+    protected open val clientRoomMap: MutableMap<GameClient, Game> = mutableMapOf()
 
     init {
         messageRouter.registerHandler(ANSWER_QUESTION_PACKET_ID, object : MessageHandler<AnswerQuestionMessage> {

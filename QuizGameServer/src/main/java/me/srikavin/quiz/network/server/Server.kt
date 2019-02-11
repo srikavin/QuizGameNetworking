@@ -1,6 +1,8 @@
 package me.srikavin.quiz.network.server
 
 
+import com.mongodb.MongoClient
+import com.mongodb.client.MongoDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -11,7 +13,13 @@ import me.srikavin.quiz.network.common.MessageRouter
 import me.srikavin.quiz.network.common.model.game.GameClient
 import me.srikavin.quiz.network.common.model.network.RejoinToken
 import me.srikavin.quiz.network.common.put
+import me.srikavin.quiz.network.server.game.MatchmakerGameListener
+import me.srikavin.quiz.network.server.game.NetworkMatchmaker
+import me.srikavin.quiz.network.server.model.DBQuiz
+import me.srikavin.quiz.network.server.model.QuizRepository
 import mu.KotlinLogging
+import org.litote.kmongo.KMongo
+import org.litote.kmongo.getCollection
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.IOException
@@ -47,8 +55,31 @@ class Server(private val socket: ServerSocket) {
     private val clientsToRemove = ArrayList<TemporaryClient>()
     private val messageRouter = MessageRouter()
     private val authService = AuthService()
+    private lateinit var matchmakerGameListener: MatchmakerGameListener
+    lateinit var quizRepository: QuizRepository
+    lateinit var client: MongoClient
 
     fun start() {
+        try {
+            logger.info { "Initializing Database Connection" }
+            client = KMongo.createClient()
+            val database: MongoDatabase = client.getDatabase("db")
+            val col = database.getCollection<DBQuiz>("quizzes")
+            quizRepository = QuizRepository(col)
+
+            // Verify connection was successful
+            client.listDatabaseNames().first()
+        } catch (e: Throwable) {
+            logger.error { "Failed to initialize database" }
+            logger.error { "Shutting Down" }
+            System.exit(0)
+            return
+        }
+
+
+        logger.info { "Initializing message router" }
+        matchmakerGameListener = MatchmakerGameListener(NetworkMatchmaker(quizRepository), messageRouter)
+
         logger.info { "Initializing server" }
         GlobalScope.launch {
             logger.info { "Initializing connection coroutine" }
@@ -67,6 +98,7 @@ class Server(private val socket: ServerSocket) {
             logger.info { "Initializing new client connection routine" }
             processNewClients()
         }
+
     }
 
     private suspend fun processMessages() {
@@ -85,6 +117,10 @@ class Server(private val socket: ServerSocket) {
         val toRemove = ArrayList<NetworkClient>()
 
         gameClientMap.forEach { _, gameClient ->
+            if (!gameClient.backing.isConnected()) {
+                return@forEach
+            }
+
             val client = gameClient.backing as NetworkClient
             try {
                 val reader = client.reader
@@ -106,7 +142,12 @@ class Server(private val socket: ServerSocket) {
                             val message = client.messageQueue.poll()
                             if (message != null) {
                                 val serialized = messageRouter.serializeMessage(message)
-                                client.writer.write(serialized.array())
+                                val serializedArray = serialized.array()
+                                val length = ByteBuffer.allocate(4)
+                                        .putInt(serializedArray.size - serialized.arrayOffset() + 1)
+                                client.writer.write(length.array())
+                                client.writer.write(message.identifier.value.toInt())
+                                client.writer.write(serialized.array(), serialized.arrayOffset(), serialized.position())
                                 client.writer.flush()
                             }
                         }
@@ -114,7 +155,6 @@ class Server(private val socket: ServerSocket) {
                     }
                     return@forEach
                 }
-
                 if (reader.available() == 0) {
                     return@forEach
                 }
@@ -149,19 +189,21 @@ class Server(private val socket: ServerSocket) {
 
                 // Once a message is done, process it
                 if (client.inProgress == client.total) {
+                    logger.info { "Received packet from client" }
                     messageRouter.handlePacket(gameClient, client.buffer.toByteArray().wrap())
                     client.inProgress = -1
                     client.total = 0
                     return@forEach
                 }
 
-            } catch (t: IOException) {
-                t.printStackTrace()
+            } catch (t: Throwable) {
+                //Catch all exceptions to prevent termination of the message processing routine
+                logger.error(t) { "Exception occurred in processing thread" }
                 toRemove.add(client)
                 try {
                     client.socket.close()
                 } catch (ex: Exception) {
-                    ex.printStackTrace()
+                    logger.error(t) { "Exception occurred when removing client" }
                 }
                 return@forEach
             }

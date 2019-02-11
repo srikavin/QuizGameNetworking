@@ -5,6 +5,6 @@ import me.srikavin.quiz.network.common.model.game.GameClient
 import me.srikavin.quiz.network.common.model.game.GamePlayer
 
 class NetworkGamePlayer(
-        private val gameClient: GameClient,
+        val gameClient: GameClient,
         var player: GamePlayer
 ) : BackingClient by gameClient.backing

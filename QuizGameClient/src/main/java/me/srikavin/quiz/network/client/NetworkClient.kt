@@ -7,6 +7,8 @@ import kotlinx.coroutines.launch
 import me.srikavin.quiz.network.common.MessageRouter
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.model.data.UserID
+import me.srikavin.quiz.network.common.model.game.BackingClient
+import me.srikavin.quiz.network.common.model.game.GameClient
 import me.srikavin.quiz.network.common.model.network.RejoinToken
 import me.srikavin.quiz.network.common.put
 import java.io.BufferedInputStream
@@ -17,22 +19,42 @@ import java.nio.ByteBuffer
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
+
+private class InternalBackingClient(override val id: UUID) : BackingClient {
+    override fun kick() {
+    }
+
+    override fun send(message: MessageBase) {
+    }
+
+    override fun isConnected(): Boolean {
+        return true
+    }
+
+}
+
+private class InternalGameClient(id: UUID) : GameClient(InternalBackingClient(id))
+
+class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRouter) {
     lateinit var socket: Socket
     lateinit var networkScope: CoroutineScope
     lateinit var input: BufferedInputStream
     lateinit var output: BufferedOutputStream
-    var rejoinToken: RejoinToken =
-            RejoinToken(UUID.randomUUID())
-    var userId: UserID =
-            UserID(UUID.randomUUID())
+    private lateinit var gameClient: InternalGameClient
+
+    var rejoinToken: RejoinToken = RejoinToken(UUID.randomUUID())
+    var userId: UserID = UserID(UUID.randomUUID())
 
     var connected: Boolean = false
 
-    val queue = ConcurrentLinkedQueue<MessageBase>()
+    private val queue = ConcurrentLinkedQueue<MessageBase>()
 
     fun start(networkScope: CoroutineScope, rejoinToken: RejoinToken? = null) {
         start(networkScope, rejoinToken?.token)
+    }
+
+    fun sendMessage(message: MessageBase) {
+        queue.add(message)
     }
 
     fun start(networkScope: CoroutineScope, rejoinToken: UUID? = null) {
@@ -42,7 +64,6 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
             messageHandler()
         }
 
-//        rejoinToken =
 
         //Initialize connection
         networkScope.launch {
@@ -71,6 +92,8 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
             this@NetworkClient.rejoinToken = RejoinToken(responseBuffer)
             this@NetworkClient.userId = UserID(responseBuffer)
 
+            gameClient = InternalGameClient(this@NetworkClient.userId.id)
+
             println(this@NetworkClient)
             println(this@NetworkClient.rejoinToken)
             println(this@NetworkClient.userId)
@@ -81,6 +104,7 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
 
     private suspend fun messageHandler() {
         var buffer: ByteBuffer = ByteBuffer.allocate(0)
+        var lengthWriteBuffer: ByteBuffer = ByteBuffer.allocate(4)
         var inProgress = -1
         var total = 0
         while (true) {
@@ -88,21 +112,41 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
                 while (queue.isNotEmpty()) {
                     val base = queue.poll()
                     val serialized = packetRouter.serializeMessage(base)
-                    output.write(serialized.array())
+                    val serializedArray = serialized.array()
+
+                    lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
+                    output.write(lengthWriteBuffer.array())
+                    lengthWriteBuffer.rewind()
+
+                    //Endianness of the identifier does not matter, as it is a single byte
+                    val id = ByteArray(1)
+                    id[0] = base.identifier.value
+                    output.write(id)
+
+                    //Send the serialized packet
+                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
+
+                    output.flush()
                 }
                 if (inProgress == total) {
+                    buffer.flip()
                     //Hand-off to packet router
+                    packetRouter.handlePacket(gameClient, buffer)
                     inProgress = -1
                     total = 0
                 }
 
+
+                //Read the available bytes in chunks, allowing simultaneous sending of packets on a single thread
                 if (input.available() > 0) {
                     if (inProgress != -1) {
                         if (inProgress < total) {
-                            val readAmount = if (total - inProgress < 32) total - inProgress else 32
+                            val readAmount = if (total - inProgress < 1024) total - inProgress else 1024
                             val buf = ByteArray(readAmount)
-                            input.read(buf)
-                            buffer.put(buf)
+                            val bytesRead = input.read(buf)
+                            inProgress += bytesRead
+                            buffer.put(buf, 0, bytesRead)
+                            println("inProgress: $inProgress")
                         }
                     } else {
                         val length = ByteArray(4)
@@ -110,6 +154,7 @@ class NetworkClient(val remote: InetAddress, val packetRouter: MessageRouter) {
                         total = ByteBuffer.wrap(length).int
                         buffer = ByteBuffer.allocate(total)
                         inProgress = 0
+                        println("total: $total")
                     }
                 }
             }

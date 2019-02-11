@@ -18,7 +18,7 @@ const val SCORE_TIME_MULTIPLIER_MS = 0.008
 
 class Game(val quiz: Quiz, val players: List<NetworkGamePlayer>) {
     private val gamePlayers = players.map { it.player }.toCollection(mutableListOf())
-    var state: GameState = GameState(quiz, Instant.now(), gamePlayers, 0)
+    var state: GameState = GameState(quiz, Instant.now(), gamePlayers, -1)
 
     private var answersReceived = AtomicInteger(0)
 
@@ -66,10 +66,8 @@ class Game(val quiz: Quiz, val players: List<NetworkGamePlayer>) {
         return (remainingTime * SCORE_TIME_MULTIPLIER_MS).toInt()
     }
 
-    fun <T : MessageBase> start() {
-        state = state.copy(
-                timeLeft = getNextInstant()
-        )
+    fun start() {
+        nextQuestion()
     }
 
     fun onAnswer(client: GameClient, message: AnswerQuestionMessage) {
