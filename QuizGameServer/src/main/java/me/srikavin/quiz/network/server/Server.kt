@@ -59,11 +59,11 @@ class Server(private val socket: ServerSocket) {
     lateinit var quizRepository: QuizRepository
     lateinit var client: MongoClient
 
-    fun start() {
+    fun start(dbName: String) {
         try {
             logger.info { "Initializing Database Connection" }
             client = KMongo.createClient()
-            val database: MongoDatabase = client.getDatabase("db")
+            val database: MongoDatabase = client.getDatabase(dbName)
             val col = database.getCollection<DBQuiz>("quizzes")
             quizRepository = QuizRepository(col)
 
