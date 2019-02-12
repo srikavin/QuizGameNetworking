@@ -8,7 +8,7 @@ import java.util.*
 interface QuizModel {
     val id: ResourceId
     val title: String
-    val questions: List<QuizQuestion>
+    val questions: List<QuizQuestionModel>
     val description: String
     fun countBytes(): Int {
         val contentsArray = this.description.toByteArray(Charsets.UTF_8)
@@ -33,7 +33,7 @@ interface QuizModel {
         buffer.put(this.title)
         buffer.putInt(this.questions.size)
 
-        for (e: QuizQuestion in this.questions) {
+        for (e: QuizQuestionModel in this.questions) {
             e.serialize(buffer)
         }
     }
@@ -42,7 +42,7 @@ interface QuizModel {
 data class NetworkQuiz(
         override val id: ResourceId,
         override val title: String,
-        override val questions: List<QuizQuestion>,
+        override val questions: List<QuizQuestionModel>,
         override val description: String
 ) : QuizModel
 
@@ -54,7 +54,7 @@ fun deserializeQuiz(buffer: ByteBuffer): QuizModel {
 
     val questionsNumber = buffer.int
 
-    val questions = ArrayList<QuizQuestion>(questionsNumber)
+    val questions = ArrayList<QuizQuestionModel>(questionsNumber)
 
     repeat(questionsNumber) {
         questions.add(deserializeQuizQuestion(buffer))

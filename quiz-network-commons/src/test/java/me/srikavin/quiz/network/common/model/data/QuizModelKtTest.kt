@@ -7,7 +7,7 @@ import java.nio.ByteBuffer
 internal class QuizModelKtTest {
     @Test
     fun serializeQuizEmpty() {
-        val questions = listOf<QuizQuestion>()
+        val questions = listOf<QuizQuestionModel>()
         val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "QuizModel description")
 
         val serialized = ByteBuffer.allocate(quiz.countBytes())

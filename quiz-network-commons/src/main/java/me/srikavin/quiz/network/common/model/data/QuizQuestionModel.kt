@@ -5,7 +5,7 @@ import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*
 
-interface QuizQuestion {
+interface QuizQuestionModel {
     val id: ResourceId
     val answers: List<QuizAnswerModel>
     val contents: String
@@ -15,9 +15,9 @@ data class NetworkQuizQuestion(
         override val id: ResourceId,
         override val answers: List<QuizAnswerModel>,
         override val contents: String
-) : QuizQuestion
+) : QuizQuestionModel
 
-fun QuizQuestion.countBytes(): Int {
+fun QuizQuestionModel.countBytes(): Int {
     val contentsArray = this.contents.toByteArray(Charsets.UTF_8)
     var answerLength = 0
     for (e in this.answers) {
@@ -31,7 +31,7 @@ fun QuizQuestion.countBytes(): Int {
             answerLength // The answers
 }
 
-fun QuizQuestion.serialize(buffer: ByteBuffer) {
+fun QuizQuestionModel.serialize(buffer: ByteBuffer) {
     buffer.put(this.id)
     buffer.put(this.contents)
     buffer.putInt(this.answers.size)
@@ -40,7 +40,7 @@ fun QuizQuestion.serialize(buffer: ByteBuffer) {
     }
 }
 
-fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
+fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestionModel {
     val id = buffer.getResourceId()
     val contents = buffer.getString()
     val answersSize = buffer.int
