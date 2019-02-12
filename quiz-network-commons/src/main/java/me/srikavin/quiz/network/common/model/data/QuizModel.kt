@@ -5,7 +5,7 @@ import me.srikavin.quiz.network.common.put
 import java.nio.ByteBuffer
 import java.util.*
 
-interface Quiz {
+interface QuizModel {
     val id: ResourceId
     val title: String
     val questions: List<QuizQuestion>
@@ -44,10 +44,10 @@ data class NetworkQuiz(
         override val title: String,
         override val questions: List<QuizQuestion>,
         override val description: String
-) : Quiz
+) : QuizModel
 
 
-fun deserializeQuiz(buffer: ByteBuffer): Quiz {
+fun deserializeQuiz(buffer: ByteBuffer): QuizModel {
     val id = buffer.getResourceId()
     val contents = buffer.getString()
     val title = buffer.getString()

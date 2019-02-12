@@ -22,7 +22,7 @@ internal class StateUpdateMessageSerializerTest {
                 NetworkQuizAnswer(ResourceId("a4"), "Answer D", false)
         )
         val questions = listOf(NetworkQuizQuestion(ResourceId("q1"), answers, "Sample Question"))
-        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "Quiz description")
+        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "QuizModel description")
 
         val player = GamePlayer(UUID.randomUUID(), "testing player", 1234, ByteArray(12))
 

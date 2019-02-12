@@ -7,13 +7,13 @@ import java.util.*
 
 interface QuizQuestion {
     val id: ResourceId
-    val answers: List<QuizAnswer>
+    val answers: List<QuizAnswerModel>
     val contents: String
 }
 
 data class NetworkQuizQuestion(
         override val id: ResourceId,
-        override val answers: List<QuizAnswer>,
+        override val answers: List<QuizAnswerModel>,
         override val contents: String
 ) : QuizQuestion
 
@@ -45,7 +45,7 @@ fun deserializeQuizQuestion(buffer: ByteBuffer): QuizQuestion {
     val contents = buffer.getString()
     val answersSize = buffer.int
 
-    val answers = ArrayList<QuizAnswer>(answersSize)
+    val answers = ArrayList<QuizAnswerModel>(answersSize)
 
     repeat(answersSize) {
         answers.add(deserializeQuizAnswer(buffer))

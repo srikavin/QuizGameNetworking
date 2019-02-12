@@ -1,7 +1,7 @@
 package me.srikavin.quiz.network.server.model
 
 import com.mongodb.client.MongoCollection
-import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.data.ResourceId
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
@@ -10,11 +10,11 @@ import org.litote.kmongo.findOneById
 
 data class DBQuiz(
         @BsonId
-        val _id: Id<Quiz>,
+        val _id: Id<QuizModel>,
         override val title: String,
         override val description: String,
         override val questions: List<DBQuizQuestion>
-) : Quiz {
+) : QuizModel {
     override val id: ResourceId = ResourceId(_id.toString())
 }
 

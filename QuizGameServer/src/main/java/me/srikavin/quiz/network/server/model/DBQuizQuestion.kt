@@ -1,7 +1,7 @@
 package me.srikavin.quiz.network.server.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.data.QuizQuestion
 import me.srikavin.quiz.network.common.model.data.ResourceId
 import org.bson.codecs.pojo.annotations.BsonId
@@ -10,7 +10,7 @@ import org.litote.kmongo.Id
 
 data class DBQuizQuestion(
         @BsonId
-        val _id: Id<Quiz>,
+        val _id: Id<QuizModel>,
         override val answers: List<DBQuizAnswer>,
         @BsonProperty(value = "text")
         @JsonProperty(value = "text")

@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.nio.ByteBuffer
 
-internal class QuizKtTest {
+internal class QuizModelKtTest {
     @Test
     fun serializeQuizEmpty() {
         val questions = listOf<QuizQuestion>()
-        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "Quiz description")
+        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "QuizModel description")
 
         val serialized = ByteBuffer.allocate(quiz.countBytes())
 
@@ -32,7 +32,7 @@ internal class QuizKtTest {
                 NetworkQuizAnswer(ResourceId("a4"), "Answer D", false)
         )
         val questions = listOf(NetworkQuizQuestion(ResourceId("q1"), answers, "Sample Question"))
-        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "Quiz description")
+        val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "QuizModel description")
 
         val serialized = ByteBuffer.allocate(quiz.countBytes())
 

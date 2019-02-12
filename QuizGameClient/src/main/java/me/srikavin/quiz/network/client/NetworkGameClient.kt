@@ -10,8 +10,8 @@ import me.srikavin.quiz.network.common.message.game.StateUpdateMessage
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakerStateUpdateMessage
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakingStartMessage
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakingStopMessage
-import me.srikavin.quiz.network.common.model.data.Quiz
-import me.srikavin.quiz.network.common.model.data.QuizAnswer
+import me.srikavin.quiz.network.common.model.data.QuizAnswerModel
+import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.data.ResourceId
 import me.srikavin.quiz.network.common.model.game.GameClient
 import me.srikavin.quiz.network.common.model.matchmaker.MatchmakingState
@@ -39,7 +39,7 @@ class NetworkGameClient(val client: NetworkClient, router: MessageRouter) {
         client.sendMessage(MatchmakingStartMessage(quiz))
     }
 
-    fun startMatchmaking(quiz: Quiz) {
+    fun startMatchmaking(quiz: QuizModel) {
         startMatchmaking(quiz.id)
     }
 
@@ -51,7 +51,7 @@ class NetworkGameClient(val client: NetworkClient, router: MessageRouter) {
         client.sendMessage(AnswerQuestionMessage(quizAnswer))
     }
 
-    fun sendAnswer(quizAnswer: QuizAnswer) {
+    fun sendAnswer(quizAnswer: QuizAnswerModel) {
         sendAnswer(quizAnswer.id)
     }
 }

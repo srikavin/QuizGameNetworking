@@ -7,7 +7,7 @@ import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.message.game.AnswerQuestionMessage
 import me.srikavin.quiz.network.common.message.game.GameState
 import me.srikavin.quiz.network.common.message.game.StateUpdateMessage
-import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.game.GameClient
 import org.threeten.bp.Instant
 import java.util.concurrent.atomic.AtomicInteger
@@ -16,7 +16,7 @@ const val TIME_PER_QUESTION = 30L
 const val TIME_PER_QUESTION_MS = TIME_PER_QUESTION * 1000L
 const val SCORE_TIME_MULTIPLIER_MS = 0.008
 
-class Game(val quiz: Quiz, val players: List<NetworkGamePlayer>) {
+class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     private val gamePlayers = players.map { it.player }.toCollection(mutableListOf())
     var state: GameState = GameState(quiz, Instant.now(), gamePlayers, -1)
 

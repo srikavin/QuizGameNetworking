@@ -3,7 +3,7 @@ package me.srikavin.quiz.network.common.message.game
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.message.MessageSerializer
 import me.srikavin.quiz.network.common.message.STATE_UPDATE_PACKET_ID
-import me.srikavin.quiz.network.common.model.data.Quiz
+import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.data.deserializeQuiz
 import me.srikavin.quiz.network.common.model.game.GamePlayer
 import me.srikavin.quiz.network.common.model.game.countBytes
@@ -13,7 +13,7 @@ import org.threeten.bp.Instant
 import java.nio.ByteBuffer
 
 data class GameState(
-        val quiz: Quiz,
+        val quiz: QuizModel,
         val timeLeft: Instant,
         val players: List<GamePlayer>,
         val currentQuestion: Int
@@ -29,7 +29,7 @@ class StateUpdateMessageSerializer : MessageSerializer<StateUpdateMessage> {
             playerLengths += player.countBytes()
         }
         val length = 8 +               // Long for epoch
-                t.state.quiz.countBytes() +       // Quiz
+                t.state.quiz.countBytes() +       // QuizModel
                 4 +                        // Current question
                 4 +                        // Number of players
                 playerLengths
