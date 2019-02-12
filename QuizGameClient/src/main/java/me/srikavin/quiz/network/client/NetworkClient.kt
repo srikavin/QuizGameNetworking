@@ -116,7 +116,7 @@ class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRo
 
                     lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
                     output.write(lengthWriteBuffer.array())
-                    lengthWriteBuffer.rewind()
+                    lengthWriteBuffer.flip()
 
                     //Endianness of the identifier does not matter, as it is a single byte
                     val id = ByteArray(1)
