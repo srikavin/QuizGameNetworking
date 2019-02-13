@@ -42,7 +42,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     }
 
     private fun nextQuestion() {
-        state.copy(
+        state = state.copy(
                 currentQuestion = state.currentQuestion + 1,
                 timeLeft = getNextInstant()
         )
