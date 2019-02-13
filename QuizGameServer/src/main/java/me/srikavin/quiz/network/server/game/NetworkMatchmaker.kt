@@ -15,16 +15,21 @@ import mu.KotlinLogging
 
 const val PLAYERS_PER_GAME: Short = 2
 
-class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreateGame: (Game) -> Unit = {}) : Matchmaker {
+class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreateGame: (Game) -> Unit = {}) :
+    Matchmaker {
     override var onGameCreate: (Game) -> Unit = {}
     private val map: MutableMap<ResourceId, MutableList<GameClient>> = mutableMapOf()
     private val logger = KotlinLogging.logger("Matchmaker")
 
-    fun sendStateUpdate(resourceId: ResourceId) {
+    private fun sendStateUpdate(resourceId: ResourceId) {
+        sendStateUpdate(resourceId, MatchmakerStates.SEARCHING)
+    }
+
+    private fun sendStateUpdate(resourceId: ResourceId, state: MatchmakerStates) {
         val numberConnected = map[resourceId]?.size?.toShort() ?: return
 
         map[resourceId]?.forEach { cl ->
-            val update = MatchmakerStateUpdateMessage(MatchmakingState(MatchmakerStates.SEARCHING, numberConnected, PLAYERS_PER_GAME))
+            val update = MatchmakerStateUpdateMessage(MatchmakingState(state, numberConnected, PLAYERS_PER_GAME))
             cl.backing.send(update)
         }
     }
@@ -47,8 +52,11 @@ class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreate
             map.remove(resourceId)
             logger.info { "Game has been created for (quiz = $resourceId) with ${players?.size} players" }
             val networkGamePlayers = players
-                    ?.map { p -> NetworkGamePlayer(p, GamePlayer(p.backing.id, "Testing", 0, ByteArray(0))) }!!
+                ?.map { p -> NetworkGamePlayer(p, GamePlayer(p.backing.id, "Testing", 0, ByteArray(0))) }!!
             val createdGame = Game(quizRepository.getQuiz(resourceId)!!, networkGamePlayers)
+
+            sendStateUpdate(resourceId, MatchmakerStates.MATCH_FOUND)
+
             createdGame.start()
             onCreateGame(createdGame)
         }
