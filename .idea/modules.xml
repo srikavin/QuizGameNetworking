@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/QuizGameClient/QuizGameClient.iml" filepath="$PROJECT_DIR$/QuizGameClient/QuizGameClient.iml" />
       <module fileurl="file://$PROJECT_DIR$/QuizGameServer/QuizGameServer.iml" filepath="$PROJECT_DIR$/QuizGameServer/QuizGameServer.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/QuizNetworking.iml" filepath="$PROJECT_DIR$/.idea/QuizNetworking.iml" />
       <module fileurl="file://$PROJECT_DIR$/quiz-network-commons/quiz-network-commons.iml" filepath="$PROJECT_DIR$/quiz-network-commons/quiz-network-commons.iml" />
     </modules>
   </component>

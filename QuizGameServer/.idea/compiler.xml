@@ -6,9 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="QuizGameServer" />
         <module name="quiz-network-commons" />
-        <module name="QuizGameClient" />
+        <module name="QuizGameServer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
