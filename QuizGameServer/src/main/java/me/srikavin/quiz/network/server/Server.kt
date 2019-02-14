@@ -182,6 +182,7 @@ class Server(private val socket: ServerSocket) {
                 if (client.inProgress != client.total) {
                     val message = ByteArray(1)
                     while (reader.available() != 0 && client.inProgress != client.total) {
+                        println("${client.inProgress} != ${client.total}")
                         client.reader.read(message)
                         client.buffer.writeBytes(message)
                         client.inProgress++
