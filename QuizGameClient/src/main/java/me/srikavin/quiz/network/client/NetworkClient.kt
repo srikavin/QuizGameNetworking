@@ -111,28 +111,21 @@ class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRo
             if (connected) {
                 while (queue.isNotEmpty()) {
                     val base = queue.poll()
-//                    println("Sending $base")
+                    println("Sending $base")
                     val serialized = packetRouter.serializeMessage(base)
                     val serializedArray = serialized.array()
 
-                    println("Identifier ${base.identifier}")
-                    println("Identifier ${base.identifier.value}")
-                    println("Identifier ${base.javaClass.simpleName}")
-
                     lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
                     output.write(lengthWriteBuffer.array())
-                    println("Length ${Arrays.toString(lengthWriteBuffer.array())}")
                     lengthWriteBuffer.flip()
 
                     //Endianness of the identifier does not matter, as it is a single byte
                     val id = ByteArray(1)
                     id[0] = base.identifier.value
-                    println("Id buffer ${Arrays.toString(id)}")
                     output.write(id)
 
                     //Send the serialized packet
 //                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
-                    println("Sending ${Arrays.toString(serializedArray)}")
                     output.write(serializedArray)
 
                     output.flush()

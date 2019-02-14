@@ -166,7 +166,6 @@ class Server(private val socket: ServerSocket) {
                     if (reader.read(lengthArray) == 4) {
                         client.total = lengthArray.wrap().int
                         client.inProgress = 0
-                        println("length ${client.total}")
                     } else {
                         logger.warn { "Client kicked for invalid packet size: $client" }
                         throw IOException("Invalid packet size; expecting size 4")
@@ -182,7 +181,6 @@ class Server(private val socket: ServerSocket) {
                 if (client.inProgress != client.total) {
                     val message = ByteArray(1)
                     while (reader.available() != 0 && client.inProgress != client.total) {
-                        println("${client.inProgress} != ${client.total}")
                         client.reader.read(message)
                         client.buffer.writeBytes(message)
                         client.inProgress++
@@ -192,8 +190,8 @@ class Server(private val socket: ServerSocket) {
                 // Once a message is done, process it
                 if (client.inProgress == client.total) {
                     logger.info { "Received packet from client" }
-                    println("Receieved ${Arrays.toString(client.buffer.toByteArray())}")
                     messageRouter.handlePacket(gameClient, client.buffer.toByteArray().wrap())
+
                     client.inProgress = -1
                     client.total = 0
                     client.buffer.reset()
