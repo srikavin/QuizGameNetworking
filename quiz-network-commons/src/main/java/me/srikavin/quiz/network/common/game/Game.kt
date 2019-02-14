@@ -36,6 +36,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
 
     private fun startCoroutineTimer(questionNumber: Int) {
         GlobalScope.launch {
+            println("out of time")
             delay(TIME_PER_QUESTION_MS)
             outOfTime(questionNumber)
         }
