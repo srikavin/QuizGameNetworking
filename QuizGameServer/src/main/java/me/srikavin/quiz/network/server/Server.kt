@@ -196,6 +196,7 @@ class Server(private val socket: ServerSocket) {
                     messageRouter.handlePacket(gameClient, client.buffer.toByteArray().wrap())
                     client.inProgress = -1
                     client.total = 0
+                    client.buffer.reset()
                     return@forEach
                 }
 
