@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="db035079-ff1f-489c-8b09-9ac76003e88f" name="Default Changelist" comment="Add more information to matchmaker" />
+    <list default="true" id="db035079-ff1f-489c-8b09-9ac76003e88f" name="Default Changelist" comment="Add more information to matchmaker">
+      <change beforePath="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt" afterDir="false" />
+    </list>
     <list id="c46f4597-4601-404b-8d1f-1f50b5f3f2f7" name="Add matchmaker state update" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -34,8 +36,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="758">
-              <caret line="96" column="34" selection-start-line="96" selection-start-column="34" selection-end-line="96" selection-end-column="34" />
+            <state relative-caret-position="225">
+              <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Main.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="60">
+              <caret line="4" selection-start-line="4" selection-end-line="4" />
             </state>
           </provider>
         </entry>
@@ -602,7 +613,7 @@
       <workItem from="1550016130609" duration="873000" />
       <workItem from="1550100253190" duration="706000" />
       <workItem from="1550101081005" duration="492000" />
-      <workItem from="1550103168200" duration="1616000" />
+      <workItem from="1550103168200" duration="1928000" />
     </task>
     <task id="LOCAL-00001" summary="Fix issue with game logic">
       <created>1550016394162</created>
@@ -637,12 +648,13 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="55691000" />
+    <option name="totallyTimeSpent" value="56003000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="30" width="1920" height="1050" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.225" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.225" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -668,9 +680,9 @@
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="right" id="Theme Preview" order="4" />
-      <window_info anchor="right" id="Maven" order="5" sideWeight="0.4994709" visible="true" weight="0.3296875" />
+      <window_info anchor="right" id="Maven" order="5" sideWeight="0.49743062" visible="true" weight="0.3296875" />
       <window_info anchor="right" id="Capture Analysis" order="6" />
-      <window_info anchor="right" x="0" y="0" width="430" height="850" id="Documentation" order="7" sideWeight="0.50157726" side_tool="true" weight="0.3296875" />
+      <window_info anchor="right" x="0" y="0" width="430" height="850" id="Documentation" order="7" sideWeight="0.5025694" side_tool="true" weight="0.3296875" />
       <window_info anchor="right" id="Palette&#9;" order="8" />
       <window_info anchor="right" id="Database" order="9" />
       <window_info anchor="right" id="Kotlin Bytecode" order="10" sideWeight="0.4984227" weight="0.3296875" />
@@ -805,13 +817,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Main.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" selection-start-line="4" selection-end-line="4" />
         </state>
       </provider>
     </entry>
@@ -1019,10 +1024,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Main.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="758">
-          <caret line="96" column="34" selection-start-line="96" selection-start-column="34" selection-end-line="96" selection-end-column="34" />
+        <state relative-caret-position="225">
+          <caret line="25" column="35" lean-forward="true" selection-start-line="25" selection-start-column="35" selection-end-line="25" selection-end-column="35" />
         </state>
       </provider>
     </entry>

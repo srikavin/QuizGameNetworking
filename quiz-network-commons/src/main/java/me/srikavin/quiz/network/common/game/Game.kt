@@ -23,6 +23,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     private var answersReceived = AtomicInteger(0)
 
     private fun sendAll(message: MessageBase) {
+        println("Sending $message")
         players.forEach { player -> player.send(message) }
     }
 
@@ -36,9 +37,9 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
 
     private fun startCoroutineTimer(questionNumber: Int) {
         GlobalScope.launch {
-            println("out of time")
             delay(TIME_PER_QUESTION_MS)
             outOfTime(questionNumber)
+            println("out of time")
         }
     }
 
