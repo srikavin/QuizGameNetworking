@@ -28,8 +28,8 @@ class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreate
     private fun sendStateUpdate(resourceId: ResourceId, state: MatchmakerStates) {
         val numberConnected = map[resourceId]?.size?.toShort() ?: return
 
+        val update = MatchmakerStateUpdateMessage(MatchmakingState(state, numberConnected, PLAYERS_PER_GAME))
         map[resourceId]?.forEach { cl ->
-            val update = MatchmakerStateUpdateMessage(MatchmakingState(state, numberConnected, PLAYERS_PER_GAME))
             cl.backing.send(update)
         }
     }
