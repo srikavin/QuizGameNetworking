@@ -41,7 +41,16 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
         }
     }
 
+    private fun endQuiz() {
+        //Send game stats message
+    }
+
     private fun nextQuestion() {
+        if (state.currentQuestion == quiz.questions.size - 1) {
+            endQuiz()
+            return
+        }
+
         state = state.copy(
                 currentQuestion = state.currentQuestion + 1,
                 timeLeft = getNextInstant()
