@@ -41,7 +41,7 @@ private data class TemporaryClient(val socket: Socket, val kickTime: Instant) {
     }
 }
 
-const val MAX_PACKET_SIZE = 1024
+const val MAX_PACKET_SIZE = 10240
 
 class Server(private val socket: ServerSocket) {
     private val logger = KotlinLogging.logger {}
@@ -166,6 +166,7 @@ class Server(private val socket: ServerSocket) {
                     if (reader.read(lengthArray) == 4) {
                         client.total = lengthArray.wrap().int
                         client.inProgress = 0
+                        println("length ${client.total}")
                     } else {
                         logger.warn { "Client kicked for invalid packet size: $client" }
                         throw IOException("Invalid packet size; expecting size 4")
