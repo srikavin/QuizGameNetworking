@@ -49,15 +49,18 @@ class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreate
 
         if (numberConnected == PLAYERS_PER_GAME) {
             val players = map[resourceId]
-            map.remove(resourceId)
+
             logger.info { "Game has been created for (quiz = $resourceId) with ${players?.size} players" }
+            sendStateUpdate(resourceId, MatchmakerStates.MATCH_FOUND)
+
+            map.remove(resourceId)
+
             val networkGamePlayers = players
                 ?.map { p -> NetworkGamePlayer(p, GamePlayer(p.backing.id, "Testing", 0, ByteArray(0))) }!!
             val createdGame = Game(quizRepository.getQuiz(resourceId)!!, networkGamePlayers)
 
-            sendStateUpdate(resourceId, MatchmakerStates.MATCH_FOUND)
-
             createdGame.start()
+
             onCreateGame(createdGame)
         }
     }
