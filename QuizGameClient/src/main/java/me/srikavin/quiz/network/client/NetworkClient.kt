@@ -111,8 +111,11 @@ class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRo
             if (connected) {
                 while (queue.isNotEmpty()) {
                     val base = queue.poll()
+//                    println("Sending $base")
                     val serialized = packetRouter.serializeMessage(base)
                     val serializedArray = serialized.array()
+
+                    println("Sending ${Arrays.toString(serializedArray)}")
 
                     lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
                     output.write(lengthWriteBuffer.array())
@@ -124,7 +127,8 @@ class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRo
                     output.write(id)
 
                     //Send the serialized packet
-                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
+//                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
+                    output.write(serialized.array())
 
                     output.flush()
                 }

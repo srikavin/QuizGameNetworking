@@ -48,6 +48,7 @@ class MessageRouter(initDefaults: Boolean = true) {
 
     @Synchronized
     fun serializeMessage(message: MessageBase): ByteBuffer {
+        println("Sending packet $message")
         val serializer = packetMap[message.identifier]
                 ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
 
