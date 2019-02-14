@@ -144,7 +144,7 @@ class Server(private val socket: ServerSocket) {
                                 val serialized = messageRouter.serializeMessage(message)
                                 val serializedArray = serialized.array()
                                 val length = ByteBuffer.allocate(4)
-                                        .putInt(serializedArray.size - serialized.arrayOffset() + 1)
+                                    .putInt(serializedArray.size - serialized.arrayOffset() + 1)
                                 client.writer.write(length.array())
                                 client.writer.write(message.identifier.value.toInt())
                                 client.writer.write(serialized.array(), serialized.arrayOffset(), serialized.position())
@@ -180,7 +180,7 @@ class Server(private val socket: ServerSocket) {
                 // Continue to read non-blocking
                 if (client.inProgress != client.total) {
                     val message = ByteArray(1)
-                    while (reader.available() != 0) {
+                    while (reader.available() != 0 && client.inProgress != client.total) {
                         client.reader.read(message)
                         client.buffer.writeBytes(message)
                         client.inProgress++
