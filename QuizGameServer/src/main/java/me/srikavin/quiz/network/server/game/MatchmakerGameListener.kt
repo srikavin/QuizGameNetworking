@@ -17,8 +17,11 @@ class MatchmakerGameListener(private val matchmaker: Matchmaker, messageRouter: 
     GameListener(messageRouter) {
     init {
         this.matchmaker.onGameCreate = { game ->
+            println(game)
             game.players.forEach { player ->
                 clientRoomMap[player.gameClient] = game
+                println(player)
+                println(clientRoomMap)
             }
         }
         messageRouter.registerHandler(MATCHMAKER_START_PACKET_ID, object : MessageHandler<MatchmakingStartMessage> {

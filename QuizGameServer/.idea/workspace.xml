@@ -4,7 +4,6 @@
     <list default="true" id="db035079-ff1f-489c-8b09-9ac76003e88f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt" afterDir="false" />
     </list>
     <list id="c46f4597-4601-404b-8d1f-1f50b5f3f2f7" name="Add matchmaker state update" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -24,19 +23,28 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt">
+        <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="429">
-              <caret line="83" column="12" lean-forward="true" selection-start-line="83" selection-start-column="12" selection-end-line="83" selection-end-column="12" />
+            <state relative-caret-position="195">
+              <caret line="17" column="38" lean-forward="true" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt">
+        <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="18" column="45" selection-start-line="18" selection-start-column="45" selection-end-line="18" selection-end-column="45" />
+            <state relative-caret-position="225">
+              <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Server.kt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="203">
+              <caret line="80" column="53" selection-start-line="80" selection-start-column="53" selection-end-line="80" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -51,10 +59,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt">
+        <entry file="file://$PROJECT_DIR$/../quiz-network-commons/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+            <state relative-caret-position="675">
+              <caret line="45" column="17" selection-start-line="45" selection-start-column="17" selection-end-line="45" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -69,28 +86,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://$MAVEN_REPOSITORY$/me/srikavin/quiz-network-commons/1.2.2/quiz-network-commons-1.2.2.jar!/me/srikavin/quiz/network/common/message/matchmaker/Matchmaker.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="28" selection-start-line="6" selection-start-column="28" selection-end-line="6" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../quiz-network-commons/pom.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="675">
-              <caret line="45" column="17" lean-forward="true" selection-start-line="45" selection-start-column="17" selection-end-line="45" selection-end-column="17" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/NetworkMatchmaker.kt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="29" selection-start-line="29" selection-end-line="29" />
+            <state relative-caret-position="60">
+              <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
               <folding>
                 <element signature="e#46#725#0" expanded="true" />
               </folding>
@@ -174,10 +173,8 @@
         <option value="$PROJECT_DIR$/../QuizGameClient/src/main/java/me/srikavin/quiz/network/client/NetworkClient.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/message/matchmaker/MatchmakerStateUpdateMessage.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/model/matchmaker/MatchmakingState.kt" />
-        <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/test/java/me/srikavin/quiz/network/common/message/matchmaker/MatchmakerStateUpdateMessageSerializerTest.java" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/test/java/me/srikavin/quiz/network/common/message/matchmaker/MatchmakerStateUpdateMessageSerializerTest.kt" />
-        <option value="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/NetworkMatchmaker.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/message/game/AnswerQuestionMessage.kt" />
         <option value="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Server.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/model/game/GamePlayer.kt" />
@@ -191,8 +188,10 @@
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/message/game/AnswerResponseMessage.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/pom.xml" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt" />
-        <option value="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt" />
         <option value="$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/NetworkMatchmaker.kt" />
+        <option value="$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt" />
       </list>
     </option>
   </component>
@@ -651,7 +650,7 @@
       <workItem from="1550106026401" duration="470000" />
       <workItem from="1550107603668" duration="4019000" />
       <workItem from="1550286098387" duration="3133000" />
-      <workItem from="1550292281018" duration="3668000" />
+      <workItem from="1550292281018" duration="4216000" />
     </task>
     <task id="LOCAL-00001" summary="Fix issue with game logic">
       <created>1550016394162</created>
@@ -737,7 +736,28 @@
       <option name="project" value="LOCAL" />
       <updated>1550296772529</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="[WIP] Debug issue with skipping to next question">
+      <created>1550297090503</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1550297090503</updated>
+    </task>
+    <task id="LOCAL-00014" summary="[WIP] Debug issue with skipping to next question">
+      <created>1550297270381</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1550297270381</updated>
+    </task>
+    <task id="LOCAL-00015" summary="[WIP] Debug issue with skipping to next question">
+      <created>1550297389206</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1550297389206</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -755,7 +775,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67858000" />
+    <option name="totallyTimeSpent" value="68406000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="30" width="1920" height="1050" extended-state="6" />
@@ -780,7 +800,7 @@
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.3273305" />
+      <window_info anchor="bottom" id="Messages" order="12" visible="true" weight="0.3273305" />
       <window_info anchor="bottom" id="Scratch Output" order="13" visible="true" weight="0.32838982" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -887,7 +907,6 @@
     <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/target/classes/me/srikavin/quiz/network/server/NetworkClient.class" />
     <entry file="file://$PROJECT_DIR$/../QuizGameClient/target/classes/me/srikavin/quiz/network/client/MainKt.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -1009,22 +1028,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="32" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../quiz-network-commons/quiz-network-commons.iml">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Server.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="124" selection-start-line="124" selection-end-line="124" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/NetworkGamePlayer.kt">
       <provider selected="true" editor-type-id="text-editor">
@@ -1142,27 +1147,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/MessageRouter.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="30" column="71" selection-start-line="30" selection-start-column="71" selection-end-line="30" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/model/game/GamePlayer.kt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="45" column="17" lean-forward="true" selection-start-line="45" selection-start-column="17" selection-end-line="45" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/Game.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="429">
@@ -1177,6 +1161,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/me/srikavin/quiz-network-commons/1.2.2/quiz-network-commons-1.2.2.jar!/me/srikavin/quiz/network/common/game/GameListener.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="38" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="45" column="17" selection-start-line="45" selection-start-column="17" selection-end-line="45" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/message/matchmaker/Matchmaker.kt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -1184,10 +1189,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/model/game/GamePlayer.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/MessageRouter.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="30" column="71" selection-start-line="30" selection-start-column="71" selection-end-line="30" selection-end-column="71" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/NetworkMatchmaker.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="29" selection-start-line="29" selection-end-line="29" />
+        <state relative-caret-position="60">
+          <caret line="35" lean-forward="true" selection-start-line="35" selection-end-line="35" />
           <folding>
             <element signature="e#46#725#0" expanded="true" />
           </folding>
@@ -1201,17 +1220,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt">
+    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+        <state relative-caret-position="195">
+          <caret line="17" column="38" lean-forward="true" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../quiz-network-commons/src/main/java/me/srikavin/quiz/network/common/game/GameListener.kt">
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/Server.kt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="18" column="45" selection-start-line="18" selection-start-column="45" selection-end-line="18" selection-end-column="45" />
+        <state relative-caret-position="203">
+          <caret line="80" column="53" selection-start-line="80" selection-start-column="53" selection-end-line="80" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/me/srikavin/quiz/network/server/game/MatchmakerGameListener.kt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="23" column="37" selection-start-line="23" selection-start-column="37" selection-end-line="23" selection-end-column="37" />
         </state>
       </provider>
     </entry>
