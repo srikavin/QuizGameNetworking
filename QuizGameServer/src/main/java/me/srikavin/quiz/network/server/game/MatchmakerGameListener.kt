@@ -2,7 +2,6 @@ package me.srikavin.quiz.network.server.game
 
 import me.srikavin.quiz.network.common.MessageHandler
 import me.srikavin.quiz.network.common.MessageRouter
-import me.srikavin.quiz.network.common.game.Game
 import me.srikavin.quiz.network.common.game.GameListener
 import me.srikavin.quiz.network.common.message.MATCHMAKER_START_PACKET_ID
 import me.srikavin.quiz.network.common.message.MATCHMAKER_STOP_PACKET_ID
@@ -14,9 +13,8 @@ import me.srikavin.quiz.network.common.model.game.GameClient
 /**
  * Handles forwarding server packets to the appropriate room or matchmaker
  */
-class MatchmakerGameListener(private val matchmaker: Matchmaker, messageRouter: MessageRouter) : GameListener(messageRouter) {
-    override val clientRoomMap: MutableMap<GameClient, Game> = mutableMapOf()
-
+class MatchmakerGameListener(private val matchmaker: Matchmaker, messageRouter: MessageRouter) :
+    GameListener(messageRouter) {
     init {
         this.matchmaker.onGameCreate = { game ->
             game.players.forEach { player ->
