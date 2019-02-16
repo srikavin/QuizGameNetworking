@@ -15,7 +15,7 @@ import mu.KotlinLogging
 
 const val PLAYERS_PER_GAME: Short = 2
 
-class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreateGame: (Game) -> Unit = {}) :
+class NetworkMatchmaker(private val quizRepository: QuizRepository) :
     Matchmaker {
     override var onGameCreate: (Game) -> Unit = {}
     private val map: MutableMap<ResourceId, MutableList<GameClient>> = mutableMapOf()
@@ -61,7 +61,7 @@ class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreate
 
             createdGame.start()
 
-            onCreateGame(createdGame)
+            onGameCreate(createdGame)
         }
     }
 
