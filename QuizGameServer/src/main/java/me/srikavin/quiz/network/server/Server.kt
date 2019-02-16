@@ -90,7 +90,7 @@ class Server(private val socket: ServerSocket) {
             logger.info { "Initializing message handling routine" }
             while (true) {
                 processMessages()
-                delay(2)
+                delay(50)
             }
         }
 
@@ -311,6 +311,7 @@ class Server(private val socket: ServerSocket) {
                 }
                 temporaryClientsMutex.unlock("Process New Clients")
             }
+            delay(50)
         }
     }
 }
