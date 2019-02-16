@@ -35,12 +35,15 @@ private class InternalBackingClient(override val id: UUID) : BackingClient {
 
 private class InternalGameClient(id: UUID) : GameClient(InternalBackingClient(id))
 
-class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRouter) {
-    lateinit var socket: Socket
+class NetworkClient(private val remote: InetAddress, private val packetRouter: MessageRouter) {
+    private lateinit var socket: Socket
     lateinit var networkScope: CoroutineScope
     lateinit var input: BufferedInputStream
     lateinit var output: BufferedOutputStream
     private lateinit var gameClient: InternalGameClient
+    private var shutdown = false
+
+    private var retryCount = 0
 
     var rejoinToken: RejoinToken = RejoinToken(UUID.randomUUID())
     var userId: UserID = UserID(UUID.randomUUID())
@@ -57,115 +60,132 @@ class NetworkClient(private val remote: InetAddress, val packetRouter: MessageRo
         queue.add(message)
     }
 
+    fun shutdown() {
+        this.networkScope.coroutineContext.cancel()
+        this.queue.clear()
+        this.shutdown = false
+    }
+
     fun start(networkScope: CoroutineScope, rejoinToken: UUID? = null) {
         this.networkScope = networkScope
 
-        this.networkScope.launch {
-            messageHandler()
-        }
-
-
         //Initialize connection
         networkScope.launch {
-            socket = Socket(remote, 1200)
-            socket.soTimeout = 15000
-            input = socket.getInputStream().buffered()
-            output = socket.getOutputStream().buffered()
+            connect(rejoinToken)
+        }
+    }
 
+    private fun connect(rejoinToken: UUID? = null) {
+        socket = Socket(remote, 1200)
+        socket.soTimeout = 15000
+        input = socket.getInputStream().buffered()
+        output = socket.getOutputStream().buffered()
 
-            val welcome = ByteBuffer.allocate(20)
+        val welcome = ByteBuffer.allocate(20)
 
-            //Length
-            welcome.putInt(16)
+        //Length
+        welcome.putInt(16)
 
-            if (rejoinToken != null) {
-                welcome.put(rejoinToken)
-            }
+        if (rejoinToken != null) {
+            welcome.put(rejoinToken)
+        }
 
-            output.write(welcome.array())
-            output.flush()
+        output.write(welcome.array())
+        output.flush()
 
-            val response = ByteArray(32)
-            input.read(response)
-            val responseBuffer = ByteBuffer.wrap(response)
+        val response = ByteArray(32)
+        input.read(response)
+        val responseBuffer = ByteBuffer.wrap(response)
 
-            this@NetworkClient.rejoinToken = RejoinToken(responseBuffer)
-            this@NetworkClient.userId = UserID(responseBuffer)
+        this@NetworkClient.rejoinToken = RejoinToken(responseBuffer)
+        this@NetworkClient.userId = UserID(responseBuffer)
 
-            gameClient = InternalGameClient(this@NetworkClient.userId.id)
+        gameClient = InternalGameClient(this@NetworkClient.userId.id)
 
-            println(this@NetworkClient)
-            println(this@NetworkClient.rejoinToken)
-            println(this@NetworkClient.userId)
+        println(this@NetworkClient)
+        println(this@NetworkClient.rejoinToken)
+        println(this@NetworkClient.userId)
 
-            connected = true
+        connected = true
+        retryCount = 0
+
+        this.networkScope.launch {
+            messageHandler()
         }
     }
 
     private suspend fun messageHandler() {
         var buffer: ByteBuffer = ByteBuffer.allocate(0)
-        var lengthWriteBuffer: ByteBuffer = ByteBuffer.allocate(4)
+        val lengthWriteBuffer: ByteBuffer = ByteBuffer.allocate(4)
         var inProgress = -1
         var total = 0
-        while (true) {
-            if (connected) {
-                while (queue.isNotEmpty()) {
-                    val base = queue.poll()
-                    println("Sending $base")
-                    val serialized = packetRouter.serializeMessage(base)
-                    val serializedArray = serialized.array()
+        try {
+            while (!shutdown) {
+                if (connected) {
+                    while (queue.isNotEmpty()) {
+                        val base = queue.poll()
+                        println("Sending $base")
+                        val serialized = packetRouter.serializeMessage(base)
+                        val serializedArray = serialized.array()
 
-                    lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
-                    output.write(lengthWriteBuffer.array())
-                    lengthWriteBuffer.flip()
+                        lengthWriteBuffer.putInt(serializedArray.size - serialized.arrayOffset() + 1)
+                        output.write(lengthWriteBuffer.array())
+                        lengthWriteBuffer.flip()
 
-                    //Endianness of the identifier does not matter, as it is a single byte
-                    val id = ByteArray(1)
-                    id[0] = base.identifier.value
-                    output.write(id)
+                        //Endianness of the identifier does not matter, as it is a single byte
+                        val id = ByteArray(1)
+                        id[0] = base.identifier.value
+                        output.write(id)
 
-                    //Send the serialized packet
+                        //Send the serialized packet
 //                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
-                    output.write(serializedArray)
+                        output.write(serializedArray)
 
-                    output.flush()
-                }
-                if (inProgress == total) {
-                    buffer.flip()
-                    //Hand-off to packet router
-                    packetRouter.handlePacket(gameClient, buffer)
-                    inProgress = -1
-                    total = 0
-                }
+                        output.flush()
+                    }
+                    if (inProgress == total) {
+                        buffer.flip()
+                        //Hand-off to packet router
+                        packetRouter.handlePacket(gameClient, buffer)
+                        inProgress = -1
+                        total = 0
+                    }
 
 
-                //Read the available bytes in chunks, allowing simultaneous sending of packets on a single thread
-                if (input.available() > 0) {
-                    if (inProgress != -1) {
-                        if (inProgress < total) {
-                            val readAmount = if (total - inProgress < 1024) total - inProgress else 1024
-                            val buf = ByteArray(readAmount)
-                            val bytesRead = input.read(buf)
-                            inProgress += bytesRead
-                            buffer.put(buf, 0, bytesRead)
-                            println("inProgress: $inProgress")
+                    //Read the available bytes in chunks, allowing simultaneous sending of packets on a single thread
+                    if (input.available() > 0) {
+                        if (inProgress != -1) {
+                            if (inProgress < total) {
+                                val readAmount = if (total - inProgress < 1024) total - inProgress else 1024
+                                val buf = ByteArray(readAmount)
+                                val bytesRead = input.read(buf)
+                                inProgress += bytesRead
+                                buffer.put(buf, 0, bytesRead)
+                                println("inProgress: $inProgress")
+                            }
+                        } else {
+                            val length = ByteArray(4)
+                            input.read(length)
+                            total = ByteBuffer.wrap(length).int
+                            buffer = ByteBuffer.allocate(total)
+                            inProgress = 0
+                            println("total: $total")
                         }
-                    } else {
-                        val length = ByteArray(4)
-                        input.read(length)
-                        total = ByteBuffer.wrap(length).int
-                        buffer = ByteBuffer.allocate(total)
-                        inProgress = 0
-                        println("total: $total")
                     }
                 }
+                delay(200)
             }
-            delay(200)
-        }
-    }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            connect(rejoinToken.token)
+            retryCount++
+            if (retryCount > 3) {
+                throw e
+            }
 
-    fun close() {
-        networkScope.coroutineContext.cancel()
-        socket.close()
+        } finally {
+            this.connected = false
+            this.socket.close()
+        }
     }
 }

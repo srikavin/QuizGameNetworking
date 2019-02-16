@@ -24,7 +24,7 @@ internal class StateUpdateMessageSerializerTest {
         val questions = listOf(NetworkQuizQuestion(ResourceId("q1"), answers, "Sample Question"))
         val quiz = NetworkQuiz(ResourceId("quiz1"), "testing quiz serialization", questions, "QuizModel description")
 
-        val player = GamePlayer(UUID.randomUUID(), "testing player", 1234, ByteArray(12))
+        val player = GamePlayer(UUID.randomUUID(), "testing player", 1234, "https://some.website.com")
 
         val message = StateUpdateMessage(GameState(quiz, Instant.now(), listOf(player), 1))
 

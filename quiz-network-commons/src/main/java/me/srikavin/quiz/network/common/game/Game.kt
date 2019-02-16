@@ -4,13 +4,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.srikavin.quiz.network.common.message.MessageBase
-import me.srikavin.quiz.network.common.message.game.AnswerQuestionMessage
-import me.srikavin.quiz.network.common.message.game.GameState
-import me.srikavin.quiz.network.common.message.game.StateUpdateMessage
+import me.srikavin.quiz.network.common.message.game.*
 import me.srikavin.quiz.network.common.model.data.QuizModel
 import me.srikavin.quiz.network.common.model.game.GameClient
 import org.threeten.bp.Instant
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 const val TIME_PER_QUESTION = 30L
 const val TIME_PER_QUESTION_MS = TIME_PER_QUESTION * 1000L
@@ -20,7 +19,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     private val gamePlayers = players.map { it.player }.toCollection(mutableListOf())
     var state: GameState = GameState(quiz, Instant.now(), gamePlayers, -1)
 
-    private var answersReceived = AtomicInteger(0)
+    private var answersReceived = Collections.newSetFromMap(ConcurrentHashMap<UUID, Boolean>())
 
     private fun sendAll(message: MessageBase) {
         println("Sending $message")
@@ -45,6 +44,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
 
     private fun endQuiz() {
         //Send game stats message
+        sendAll(GameEndMessage())
     }
 
     private fun nextQuestion() {
@@ -54,11 +54,11 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
         }
 
         state = state.copy(
-                currentQuestion = state.currentQuestion + 1,
-                timeLeft = getNextInstant()
+            currentQuestion = state.currentQuestion + 1,
+            timeLeft = getNextInstant()
         )
-        sendState()
         startCoroutineTimer(state.currentQuestion)
+        sendState()
     }
 
     private fun outOfTime(questionNumber: Int) {
@@ -92,11 +92,16 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
 
         if (answer.isCorrect) {
             player.player.copy(
-                    score = player.player.score + calculateScore()
+                score = player.player.score + calculateScore()
             )
             sendState(player)
         }
-        if (answersReceived.incrementAndGet() == players.size) {
+
+        sendAll(AnswerResponseMessage(player.player, answer))
+
+        answersReceived.add(player.id)
+
+        if (answersReceived.size == players.size) {
             nextQuestion()
         }
     }

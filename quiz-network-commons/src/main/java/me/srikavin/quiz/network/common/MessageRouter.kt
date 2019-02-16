@@ -2,6 +2,7 @@ package me.srikavin.quiz.network.common
 
 import me.srikavin.quiz.network.common.message.*
 import me.srikavin.quiz.network.common.message.game.AnswerQuestionSerializer
+import me.srikavin.quiz.network.common.message.game.GameEndMessageSerializer
 import me.srikavin.quiz.network.common.message.game.StateUpdateMessageSerializer
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakerStateUpdateMessageSerializer
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakingStartMessageSerializer
@@ -18,7 +19,7 @@ interface MessageHandler<in T : MessageBase> {
 class MessageRouter(initDefaults: Boolean = true) {
     private val packetMap: MutableMap<MessageIdentifier, MessageSerializer<out MessageBase>> = HashMap()
     private val handlerMap: MutableMap<MessageIdentifier, MutableSet<MessageHandler<MessageBase>>> =
-            mutableMapOf<MessageIdentifier, MutableSet<MessageHandler<MessageBase>>>().withDefault { HashSet() }
+        mutableMapOf<MessageIdentifier, MutableSet<MessageHandler<MessageBase>>>().withDefault { HashSet() }
 
     init {
         if (initDefaults) {
@@ -27,6 +28,7 @@ class MessageRouter(initDefaults: Boolean = true) {
             registerPacket(MATCHMAKER_STATE_UPDATE_PACKET_ID, MatchmakerStateUpdateMessageSerializer())
             registerPacket(STATE_UPDATE_PACKET_ID, StateUpdateMessageSerializer())
             registerPacket(ANSWER_QUESTION_PACKET_ID, AnswerQuestionSerializer())
+            registerPacket(GAME_END_PACKET_ID, GameEndMessageSerializer())
         }
     }
 
@@ -49,7 +51,7 @@ class MessageRouter(initDefaults: Boolean = true) {
     @Synchronized
     fun serializeMessage(message: MessageBase): ByteBuffer {
         val serializer = packetMap[message.identifier]
-                ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
+            ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
 
 
         @Suppress("UNCHECKED_CAST")

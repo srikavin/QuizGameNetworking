@@ -54,4 +54,8 @@ class NetworkGameClient(val client: NetworkClient, router: MessageRouter) {
     fun sendAnswer(quizAnswer: QuizAnswerModel) {
         sendAnswer(quizAnswer.id)
     }
+
+    fun shutdown(){
+        client.shutdown()
+    }
 }
