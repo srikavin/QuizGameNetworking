@@ -35,7 +35,11 @@ private class InternalBackingClient(override val id: UUID) : BackingClient {
 
 private class InternalGameClient(id: UUID) : GameClient(InternalBackingClient(id))
 
-class NetworkClient(private val remote: InetAddress, private val packetRouter: MessageRouter) {
+class NetworkClient(
+        private val remote: InetAddress,
+        private val packetRouter: MessageRouter,
+        private val bufferSize: Int = 4096
+) {
     private lateinit var socket: Socket
     lateinit var networkScope: CoroutineScope
     lateinit var input: BufferedInputStream
@@ -138,8 +142,7 @@ class NetworkClient(private val remote: InetAddress, private val packetRouter: M
                         output.write(id)
 
                         //Send the serialized packet
-//                    output.write(serialized.array(), serialized.arrayOffset(), serialized.position())
-                        output.write(serializedArray)
+                        output.write(serializedArray, serialized.arrayOffset(), serialized.position())
 
                         output.flush()
                     }
@@ -156,7 +159,7 @@ class NetworkClient(private val remote: InetAddress, private val packetRouter: M
                     if (input.available() > 0) {
                         if (inProgress != -1) {
                             if (inProgress < total) {
-                                val readAmount = if (total - inProgress < 1024) total - inProgress else 1024
+                                val readAmount = if (total - inProgress < bufferSize) total - inProgress else bufferSize
                                 val buf = ByteArray(readAmount)
                                 val bytesRead = input.read(buf)
                                 inProgress += bytesRead

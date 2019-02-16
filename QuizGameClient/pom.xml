@@ -6,7 +6,7 @@
 
     <groupId>me.srikavin</groupId>
     <artifactId>QuizGameClient</artifactId>
-    <version>1.3.12</version>
+    <version>1.3.13</version>
 
     <properties>
         <kotlin.version>1.3.21</kotlin.version>
