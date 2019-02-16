@@ -85,6 +85,9 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
         val player = players.find { it.id == client.backing.id }
         val answer = quiz.questions[state.currentQuestion].answers.find { answer -> answer.id == message.answerId }
 
+        println(player)
+        println(answer)
+
         if (player == null || answer == null) {
             //Disregard message received that does not involve the current state of this game
             return
@@ -97,6 +100,8 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
             sendState(player)
         }
 
+        println(answersReceived)
+        println(players)
         sendAll(AnswerResponseMessage(player.player, answer))
 
         answersReceived.add(player.id)
