@@ -56,7 +56,7 @@ class NetworkMatchmaker(private val quizRepository: QuizRepository, val onCreate
             map.remove(resourceId)
 
             val networkGamePlayers = players
-                ?.map { p -> NetworkGamePlayer(p, GamePlayer(p.backing.id, "Testing", 0, ByteArray(0))) }!!
+                ?.map { p -> NetworkGamePlayer(p, GamePlayer(p.backing.id, "Testing", 0, "http://testing.com")) }!!
             val createdGame = Game(quizRepository.getQuiz(resourceId)!!, networkGamePlayers)
 
             createdGame.start()
