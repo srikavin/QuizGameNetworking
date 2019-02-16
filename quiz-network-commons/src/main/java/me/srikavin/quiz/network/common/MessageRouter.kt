@@ -2,6 +2,7 @@ package me.srikavin.quiz.network.common
 
 import me.srikavin.quiz.network.common.message.*
 import me.srikavin.quiz.network.common.message.game.AnswerQuestionSerializer
+import me.srikavin.quiz.network.common.message.game.AnswerResponseSerializer
 import me.srikavin.quiz.network.common.message.game.GameEndMessageSerializer
 import me.srikavin.quiz.network.common.message.game.StateUpdateMessageSerializer
 import me.srikavin.quiz.network.common.message.matchmaker.MatchmakerStateUpdateMessageSerializer
@@ -29,6 +30,7 @@ class MessageRouter(initDefaults: Boolean = true) {
             registerPacket(STATE_UPDATE_PACKET_ID, StateUpdateMessageSerializer())
             registerPacket(ANSWER_QUESTION_PACKET_ID, AnswerQuestionSerializer())
             registerPacket(GAME_END_PACKET_ID, GameEndMessageSerializer())
+            registerPacket(ANSWER_RESPONSE_PACKET_ID, AnswerResponseSerializer())
         }
     }
 
