@@ -1,6 +1,6 @@
 package me.srikavin.quiz.network.common.message.game
 
-import me.srikavin.quiz.network.common.message.ANSWER_QUESTION_PACKET_ID
+import me.srikavin.quiz.network.common.message.ANSWER_RESPONSE_PACKET_ID
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.message.MessageSerializer
 import me.srikavin.quiz.network.common.model.data.QuizAnswerModel
@@ -15,7 +15,7 @@ import java.nio.ByteBuffer
 
 
 data class AnswerResponseMessage(val player: GamePlayer, val quizAnswerModel: QuizAnswerModel) :
-    MessageBase(ANSWER_QUESTION_PACKET_ID)
+    MessageBase(ANSWER_RESPONSE_PACKET_ID)
 
 class AnswerResponseSerializer : MessageSerializer<AnswerResponseMessage> {
     override fun toBytes(t: AnswerResponseMessage): ByteBuffer {
