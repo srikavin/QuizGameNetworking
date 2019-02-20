@@ -86,8 +86,8 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
         val player = players.find { it.id == client.backing.id }
         val answer = quiz.questions[state.currentQuestion].answers.find { answer -> answer.id == message.answerId }
 
-        println(player)
-        println(answer)
+        println("player= $player")
+        println("answer= $answer")
 
         if (player == null || answer == null) {
             //Disregard message received that does not involve the current state of this game
