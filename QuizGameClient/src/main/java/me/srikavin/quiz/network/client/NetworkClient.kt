@@ -1,9 +1,6 @@
 package me.srikavin.quiz.network.client
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import me.srikavin.quiz.network.common.MessageRouter
 import me.srikavin.quiz.network.common.message.MessageBase
 import me.srikavin.quiz.network.common.model.data.UserID
@@ -33,12 +30,18 @@ private class InternalBackingClient(override val id: UUID) : BackingClient {
 
 }
 
+private val DefaultExceptionHandler = CoroutineExceptionHandler { _, exception ->
+    exception.printStackTrace()
+    throw exception
+}
+
 private class InternalGameClient(id: UUID) : GameClient(InternalBackingClient(id))
 
 class NetworkClient(
         private val remote: InetAddress,
         private val packetRouter: MessageRouter,
-        private val bufferSize: Int = 4096
+        private val bufferSize: Int = 4096,
+        private val exceptionHandler: CoroutineExceptionHandler = DefaultExceptionHandler
 ) {
     private lateinit var socket: Socket
     lateinit var networkScope: CoroutineScope
@@ -74,7 +77,7 @@ class NetworkClient(
         this.networkScope = networkScope
 
         //Initialize connection
-        networkScope.launch {
+        networkScope.launch(exceptionHandler) {
             connect(rejoinToken)
         }
     }
@@ -113,7 +116,7 @@ class NetworkClient(
         connected = true
         retryCount = 0
 
-        this.networkScope.launch {
+        this.networkScope.launch(exceptionHandler) {
             messageHandler()
         }
     }
