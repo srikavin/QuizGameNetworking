@@ -189,7 +189,7 @@ class Server(private val socket: ServerSocket) {
 
                 // Once a message is done, process it
                 if (client.inProgress == client.total) {
-                    logger.info { "Received packet from client ($gameClient)" }
+                    logger.info { "Received packet from client ($gameClient - ${gameClient.backing.id})" }
                     messageRouter.handlePacket(gameClient, client.buffer.toByteArray().wrap())
 
                     client.inProgress = -1
