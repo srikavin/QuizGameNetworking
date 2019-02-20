@@ -22,7 +22,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     private var answersReceived = Collections.newSetFromMap(ConcurrentHashMap<UUID, Boolean>())
 
     private fun sendAll(message: MessageBase) {
-        println("Sending $message")
+        println("Sending ${message.javaClass.simpleName}")
         players.forEach { player -> player.send(message) }
     }
 
@@ -48,6 +48,7 @@ class Game(val quiz: QuizModel, val players: List<NetworkGamePlayer>) {
     }
 
     private fun nextQuestion() {
+        answersReceived.clear()
         if (state.currentQuestion == quiz.questions.size - 1) {
             endQuiz()
             return
