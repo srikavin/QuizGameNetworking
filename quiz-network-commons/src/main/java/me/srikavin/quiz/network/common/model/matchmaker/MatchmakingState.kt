@@ -7,7 +7,7 @@ enum class MatchmakerStates(val code: Byte) {
 
     companion object {
         fun fromCode(code: Byte): MatchmakerStates {
-            for (e in MatchmakerStates.values()) {
+            for (e in values()) {
                 if (e.code == code) {
                     return e
                 }

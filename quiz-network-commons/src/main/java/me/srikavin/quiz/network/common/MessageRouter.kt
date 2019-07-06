@@ -34,7 +34,6 @@ class MessageRouter(initDefaults: Boolean = true) {
         }
     }
 
-    @Synchronized
     fun handlePacket(client: GameClient, message: ByteBuffer) {
         val id = MessageIdentifier(message.get())
         val serializer = packetMap[id] ?: throw RuntimeException("Unknown packet id: $id")
@@ -42,15 +41,12 @@ class MessageRouter(initDefaults: Boolean = true) {
         handlePacket(client, packet)
     }
 
-    @Synchronized
     fun handlePacket(client: GameClient, message: MessageBase) {
-        println(message.javaClass.simpleName)
         handlerMap[message.identifier].orEmpty().forEach {
             it.handle(client, message)
         }
     }
 
-    @Synchronized
     fun serializeMessage(message: MessageBase): ByteBuffer {
         val serializer = packetMap[message.identifier]
             ?: throw RuntimeException("Unrecognized packet: ${message.identifier}; $message, has it been registered?)")
@@ -60,12 +56,10 @@ class MessageRouter(initDefaults: Boolean = true) {
         return (serializer as MessageSerializer<MessageBase>).toBytes(message)
     }
 
-    @Synchronized
     fun registerPacket(type: MessageIdentifier, serializer: MessageSerializer<out MessageBase>) {
         packetMap[type] = serializer
     }
 
-    @Synchronized
     fun <T : MessageBase> registerHandler(type: MessageIdentifier, handler: MessageHandler<T>) {
         if (!handlerMap.containsKey(type)) {
             handlerMap[type] = HashSet()
