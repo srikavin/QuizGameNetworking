@@ -1,7 +1,6 @@
 package me.srikavin.quiz.network.server
 
 
-import com.mongodb.MongoClient
 import com.mongodb.client.MongoDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -18,7 +17,6 @@ import me.srikavin.quiz.network.server.game.NetworkMatchmaker
 import me.srikavin.quiz.network.server.model.DBQuiz
 import me.srikavin.quiz.network.server.model.QuizRepository
 import mu.KotlinLogging
-import org.litote.kmongo.KMongo
 import org.litote.kmongo.getCollection
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
@@ -41,7 +39,7 @@ private data class TemporaryClient(val socket: Socket, val kickTime: Instant) {
     }
 }
 
-const val MAX_PACKET_SIZE = 10240
+const val MAX_PACKET_SIZE = 1024 * 10 // 10 MB
 
 class Server(private val socket: ServerSocket) {
     private val logger = KotlinLogging.logger {}
@@ -56,26 +54,12 @@ class Server(private val socket: ServerSocket) {
     private val messageRouter = MessageRouter()
     private val authService = AuthService()
     private lateinit var matchmakerGameListener: MatchmakerGameListener
-    lateinit var quizRepository: QuizRepository
-    lateinit var client: MongoClient
+    private lateinit var quizRepository: QuizRepository
 
-    fun start(dbName: String) {
-        try {
-            logger.info { "Initializing Database Connection" }
-            client = KMongo.createClient()
-            val database: MongoDatabase = client.getDatabase(dbName)
-            val col = database.getCollection<DBQuiz>("quizzes")
-            quizRepository = QuizRepository(col)
-
-            // Verify connection was successful
-            client.listDatabaseNames().first()
-        } catch (e: Throwable) {
-            logger.error { "Failed to initialize database" }
-            logger.error { "Shutting Down" }
-            System.exit(0)
-            return
-        }
-
+    fun start(database: MongoDatabase) {
+        logger.info { "Initializing Database Connection" }
+        val col = database.getCollection<DBQuiz>("quizzes")
+        quizRepository = QuizRepository(col)
 
         logger.info { "Initializing message router" }
         matchmakerGameListener = MatchmakerGameListener(NetworkMatchmaker(quizRepository), messageRouter)
@@ -101,6 +85,7 @@ class Server(private val socket: ServerSocket) {
 
     }
 
+    @Suppress("BlockingMethodInNonBlockingContext")
     private suspend fun processMessages() {
         newClientsMutex.withLock {
             clients.addAll(newClients)
@@ -116,7 +101,7 @@ class Server(private val socket: ServerSocket) {
 
         val toRemove = ArrayList<NetworkClient>()
 
-        gameClientMap.forEach { _, gameClient ->
+        gameClientMap.forEach { (_, gameClient) ->
             if (!gameClient.backing.isConnected()) {
                 return@forEach
             }
@@ -144,7 +129,7 @@ class Server(private val socket: ServerSocket) {
                                 val serialized = messageRouter.serializeMessage(message)
                                 val serializedArray = serialized.array()
                                 val length = ByteBuffer.allocate(4)
-                                    .putInt(serializedArray.size - serialized.arrayOffset() + 1)
+                                        .putInt(serializedArray.size - serialized.arrayOffset() + 1)
                                 client.writer.write(length.array())
                                 client.writer.write(message.identifier.value.toInt())
                                 client.writer.write(serialized.array(), serialized.arrayOffset(), serialized.position())
@@ -283,8 +268,6 @@ class Server(private val socket: ServerSocket) {
 
                             val buffer = bufferRaw.wrap()
                             val token = authService.getRejoinToken(buffer)
-
-                            println(token)
 
                             val user = authService.getUUID(token)
 
